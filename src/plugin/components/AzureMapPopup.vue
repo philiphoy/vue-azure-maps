@@ -10,7 +10,7 @@ import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import bindProps from '@/plugin/utils/bind-props'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 enum AzureMapPopupEvent {
   Created = 'created',
@@ -22,9 +22,14 @@ enum AzureMapPopupEvent {
 /**
  * An information window anchored at a specified position on a map.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapPopup',
-
+  emits: {
+    created(e: atlas.Popup) { return e },
+    update(e: boolean) { return e },
+    open(e: atlas.TargetedEvent) { return e },
+    close(e: atlas.TargetedEvent) { return e },
+  },
   /**
    * Inject the `getMap` function to get the `atlas.Map` instance
    */
@@ -106,7 +111,13 @@ export default Vue.extend({
       default: null,
     },
   },
-
+  data() {
+    return {
+      popup: null as atlas.Popup | null,
+      unbindProps: function () { },
+      removeEventListeners: function () { },
+    }
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -125,23 +136,24 @@ export default Vue.extend({
     }
 
     // Create a popup with selected component props as options
-    const popup = new this.$_azureMaps.atlas.Popup(
+    this.$data.popup = new this.$_azureMaps.atlas.Popup(
       getOptionsFromProps({
         props: this.$props,
         excludedPropKeys: ['tag', 'open'],
       })
     )
 
-    this.$emit(AzureMapPopupEvent.Created, popup)
+    this.$emit(AzureMapPopupEvent.Created, this.$data.popup)
 
     // Watch the open prop to show and hide the popup
     this.$watch(
       'open',
       (newVal: boolean) => {
+        if (this.$data.popup === null) return
         if (newVal) {
-          popup.open(map)
-        } else if (popup.isOpen()) {
-          popup.close()
+          this.$data.popup.open(map)
+        } else if (this.$data.popup.isOpen()) {
+          this.$data.popup.close()
         }
       },
       {
@@ -150,40 +162,40 @@ export default Vue.extend({
     )
 
     // Bind component props
-    const unbindProps = bindProps({
+    this.$data.unbindProps = bindProps({
       vm: this,
       map,
       props: [
         {
           propName: 'closeButton',
-          target: popup,
+          target: this.$data.popup,
           targetMethodName: 'options',
         },
         {
           propName: 'fillColor',
-          target: popup,
+          target: this.$data.popup,
           targetMethodName: 'options',
         },
         {
           propName: 'pixelOffset',
-          target: popup,
+          target: this.$data.popup,
           targetMethodName: 'options',
         },
         {
           propName: 'position',
-          target: popup,
+          target: this.$data.popup,
           targetMethodName: 'options',
         },
         {
           propName: 'showPointer',
-          target: popup,
+          target: this.$data.popup,
           targetMethodName: 'options',
         },
       ],
     })
 
     // Add the popup event listeners
-    const removeEventListeners = addMapEventListeners({
+    this.$data.removeEventListeners = addMapEventListeners({
       map,
       listeners: {
         // Emit update event when popup opens
@@ -197,25 +209,22 @@ export default Vue.extend({
           this.$emit(AzureMapPopupEvent.Close, targetedEvent)
         },
       },
-      target: popup,
+      target: this.$data.popup,
     })
+  },
+  unmounted() {
+    if (this.$data.popup === null) return
+    this.$data.popup.remove()
 
-    // Set the popup content when the component is mounted
-    this.$once('hook:mounted', () => {
-      popup.setOptions({
-        content: this.$el as HTMLElement,
-      })
-    })
-
-    // When the component is destroyed
-    this.$once('hook:destroyed', () => {
-      // Close and remove the popup
-      popup.remove()
-
-      // Remove the popup events attached to the map
-      removeEventListeners()
-      // Unbind component props
-      unbindProps()
+    // Remove the popup events attached to the map
+    this.$data.removeEventListeners()
+    // Unbind component props
+    this.$data.unbindProps()
+  },
+  mounted() {
+    if (this.$data.popup === null) return
+    this.$data.popup.setOptions({
+      content: this.$el as HTMLElement,
     })
   },
 })

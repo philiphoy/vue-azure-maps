@@ -36,7 +36,7 @@ function addMapEventListeners({
 
 export interface MapEventListenersConfig {
   map: atlas.Map
-  listeners: Record<string, Function | Function[]>
+  listeners: Record<string, unknown>
   target?: any
   reservedEventTypes?: string[]
 }

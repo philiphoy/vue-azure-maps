@@ -1,13 +1,13 @@
 <script lang="ts">
 import { atlas } from 'types'
 import { ControlPosition, ControlStyle } from 'azure-maps-control'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, h } from 'vue'
 import AzureMapControl from './AzureMapControl.vue'
 
 /**
  * Compass control adds the ability to change the rotation of the `atlas.Map`.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapCompassControl',
 
   props: {
@@ -42,18 +42,18 @@ export default Vue.extend({
     },
   },
 
-  render(createElement) {
+  render() {
     // Construct a compass control
-    return createElement(AzureMapControl, {
-      props: {
-        control: new this.$_azureMaps.atlas.control.CompassControl({
-          rotationDegreesDelta: this.rotationDegreesDelta,
-          style: this.controlStyle,
-        }),
-        options: {
-          position: this.position,
-        } as atlas.ControlOptions,
-      },
+    return h(AzureMapControl, {
+
+      control: new this.$_azureMaps.atlas.control.CompassControl({
+        rotationDegreesDelta: this.rotationDegreesDelta,
+        style: this.controlStyle,
+      }),
+      options: {
+        position: this.position,
+      } as atlas.ControlOptions,
+
     })
   },
 })

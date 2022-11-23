@@ -2,12 +2,12 @@
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 /**
  * Adds a control to the `atlas.Map`.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapControl',
 
   /**
@@ -36,7 +36,6 @@ export default Vue.extend({
 
     // Retrieve the map instance from the injected function
     const map = getMap()
-
     // Add the control to the map
     map.controls.add(
       this.control,
@@ -44,15 +43,18 @@ export default Vue.extend({
         props: this.options,
       })
     )
-
-    // Remove the control when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.controls.remove(this.control)
-    })
   },
+  unmounted() {
+    const getMap = getMapInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+    map.controls.remove(this.control)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

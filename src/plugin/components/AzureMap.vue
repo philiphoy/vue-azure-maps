@@ -1,5 +1,5 @@
 <template>
-  <div :id="mapId" :style="{ width, height }">
+  <div :id="mapId" :style="divStyle">
     <template v-if="isMapReady">
       <slot :map="map" />
     </template>
@@ -11,15 +11,15 @@ import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import bindProps from '@/plugin/utils/bind-props'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive, CSSProperties } from 'vue'
 
 enum AzureMapEvent {
   Ready = 'ready',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMap',
 
   provide(): {
@@ -123,7 +123,7 @@ export default Vue.extend({
      * `(url: string, resourceType: string) => RequestParameters`
      */
     transformRequest: {
-      type: Function as PropType<Function | null>,
+      type: Function as PropType<() => void | null>,
       default: null,
     },
 
@@ -425,11 +425,31 @@ export default Vue.extend({
        * Flag that indicates that the `atlas.Map` instance is ready
        */
       isMapReady: false,
+
+      removeEventListeners: () => { },
+
+      unbindProps: () => { },
+
+      removeMapReadyListener: () => { },
     }
   },
-
+  computed: {
+    divStyle() {
+      const styleTableObject: CSSProperties = {
+        width: this.width || '',
+        height: this.height || '',
+      }
+      return styleTableObject
+    },
+  },
   mounted() {
     this.initializeMap()
+  },
+  unmounted() {
+    this.$data.removeEventListeners()
+    this.$data.removeMapReadyListener()
+    this.$data.unbindProps()
+    this.$data.map?.dispose()
   },
 
   methods: {
@@ -446,18 +466,17 @@ export default Vue.extend({
       )
 
       // Save the map instance in a data property to provide it to descendent components
-      this.map = map
-
+      this.$data.map = map
       // Wait until the map resources are ready.
-      const removeMapReadyListener = addMapEventListeners({
-        map: this.map,
+      this.$data.removeMapReadyListener = addMapEventListeners({
+        map: this.$data.map,
         listeners: {
           ready: this.mapReadyCallback,
         },
       })
 
       // Bind component props
-      const unbindProps = bindProps({
+      this.$data.unbindProps = bindProps({
         vm: this,
         map,
         props: [
@@ -624,41 +643,28 @@ export default Vue.extend({
           },
         ],
       })
-
-      // Remove the map when the component is destroyed
-      this.$once('hook:destroyed', () => {
-        removeMapReadyListener()
-        unbindProps()
-        map.dispose()
-      })
     },
 
     mapReadyCallback(mapEvent: atlas.MapEvent): void {
       // Emit the custom ready event
       this.$emit(AzureMapEvent.Ready, mapEvent)
-
       // Indicate that the map instance is ready,
       // which triggers descendent components creation
       this.isMapReady = true
 
-      if (this.map) {
-        // Add the map event listeners
-        const removeEventListeners = addMapEventListeners({
-          map: this.map,
-          listeners: this.$listeners,
-          reservedEventTypes: Object.values(AzureMapEvent),
-        })
+      if (this.$data.map === null) return
 
-        // Remove the map event listeners when the component is destroyed
-        this.$once('hook:destroyed', () => {
-          removeEventListeners()
-        })
-      }
+      // Add the map event listeners
+      this.$data.removeEventListeners = addMapEventListeners({
+        map: this.$data.map,
+        listeners: this.$attrs,
+        reservedEventTypes: Object.values(AzureMapEvent),
+      })
     },
 
     getMap(): atlas.Map | null {
       // Return the map instance for descendent components injection
-      return this.map
+      return this.$data.map
     },
   },
 })

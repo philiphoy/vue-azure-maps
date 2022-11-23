@@ -5,18 +5,18 @@ import {
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapSymbolLayerEvent {
   Created = 'created',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * A symbol layer uses text or icons to render point-based data wrapped in the DataSource as symbols on the map.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapSymbolLayer',
 
   /**
@@ -31,12 +31,16 @@ export default Vue.extend({
       default: '',
     },
 
-    options: {
+    symbolOptions: {
       type: Object as PropType<atlas.SymbolLayerOptions | null>,
       default: null,
     },
   },
-
+  data() {
+    return {
+      symbolLayer: {} as atlas.layer.SymbolLayer,
+    }
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -55,19 +59,19 @@ export default Vue.extend({
     const dataSource = getDataSource()
 
     // Create the symbol layer
-    const symbolLayer = new this.$_azureMaps.atlas.layer.SymbolLayer(
+    this.$data.symbolLayer = new this.$_azureMaps.atlas.layer.SymbolLayer(
       dataSource,
       this.id || `azure-map-symbol-layer-${state.id++}`,
-      this.options || undefined
+      this.symbolOptions || undefined
     )
 
-    this.$emit(AzureMapSymbolLayerEvent.Created, symbolLayer)
+    this.$emit(AzureMapSymbolLayerEvent.Created, this.$data.symbolLayer)
 
     // Watch for options changes
     this.$watch(
       'options',
       (newOptions: atlas.SymbolLayerOptions | null) => {
-        symbolLayer.setOptions(newOptions || {})
+        this.$data.symbolLayer.setOptions(newOptions || {})
       },
       {
         deep: true,
@@ -75,24 +79,28 @@ export default Vue.extend({
     )
 
     // Add the layer to the map
-    map.layers.add(symbolLayer)
-
-    // Remove the layer when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.layers.remove(symbolLayer)
-    })
+    map.layers.add(this.$data.symbolLayer)
 
     // Add the layer events to the map
     addMapEventListeners({
       map,
-      target: symbolLayer,
-      listeners: this.$listeners,
+      target: this.$data.symbolLayer,
+      listeners: this.$attrs,
       reservedEventTypes: Object.values(AzureMapSymbolLayerEvent),
     })
   },
+  unmounted() {
+    // Look for the injected function that retreives the map instance
+    const getMap = getMapInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+    map.layers.remove(this.$data.symbolLayer)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

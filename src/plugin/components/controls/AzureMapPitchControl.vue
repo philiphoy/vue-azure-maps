@@ -1,13 +1,13 @@
 <script lang="ts">
 import { atlas } from 'types'
 import { ControlPosition, ControlStyle } from 'azure-maps-control'
-import Vue, { PropType } from 'vue'
+import { defineComponent, h, PropType } from 'vue'
 import AzureMapControl from './AzureMapControl.vue'
 
 /**
  * Pitch control adds the ability to change the pitch of the `atlas.Map`.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapPitchControl',
 
   props: {
@@ -42,18 +42,18 @@ export default Vue.extend({
     },
   },
 
-  render(createElement) {
+  render() {
     // Construct a pitch control
-    return createElement(AzureMapControl, {
-      props: {
-        control: new this.$_azureMaps.atlas.control.PitchControl({
-          pitchDegreesDelta: this.pitchDegreesDelta,
-          style: this.controlStyle,
-        }),
-        options: {
-          position: this.position,
-        } as atlas.ControlOptions,
-      },
+    return h(AzureMapControl, {
+
+      control: new this.$_azureMaps.atlas.control.PitchControl({
+        pitchDegreesDelta: this.pitchDegreesDelta,
+        style: this.controlStyle,
+      }),
+      options: {
+        position: this.position,
+      } as atlas.ControlOptions,
+
     })
   },
 })

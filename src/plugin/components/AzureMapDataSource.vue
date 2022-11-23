@@ -10,13 +10,13 @@
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapDataSourceEvent {
   Created = 'created',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * `AzureMapDataSource` makes it easy to manage shapes data that will be displayed on the map.
@@ -26,7 +26,7 @@ const state = Vue.observable({ id: 0 })
  * `AzureMapDataSource` may be used with:
  * `AzureMapSymbolLayer`, `AzureMapLineLayer`, `AzureMapPolygonLayer`, `AzureMapBubbleLayer`, and `AzureMapHeatMapLayer`.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapDataSource',
 
   provide(): {
@@ -199,17 +199,23 @@ export default Vue.extend({
       this.dataSource = dataSource
 
       // Add the data source to the map sources
-      map.sources.add(this.dataSource)
-
-      // Remove the data source when the component is destroyed
-      this.$once('hook:destroyed', () => {
-        map.sources.remove(dataSource)
-      })
+      map.sources.add(dataSource)
     },
+    destroyed() {
+      const getMap = getMapInjection(this)
 
+      if (!getMap) return
+
+      // Retrieve the map instance from the injected function
+      const map = getMap()
+      const dso = this.$data.dataSource
+      if (dso === null) return
+
+      map.sources.remove(dso)
+    },
     getDataSource(): atlas.source.DataSource | null {
       // Return the data source for descendent components injection
-      return this.dataSource
+      return this.$data.dataSource
     },
   },
 })

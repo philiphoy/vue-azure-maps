@@ -2,24 +2,24 @@
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapImageLayerEvent {
   Created = 'created',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * Overlay an image to fixed set of coordinates on the map.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapImageLayer',
-
   /**
    * Inject the `getMap` function to get the `atlas.Map` instance
    */
   inject: ['getMap'],
+  inheritAttrs: true,
 
   props: {
     id: {
@@ -32,7 +32,11 @@ export default Vue.extend({
       default: null,
     },
   },
-
+  data() {
+    return {
+      imageLayer: {} as atlas.layer.ImageLayer,
+    }
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -43,18 +47,18 @@ export default Vue.extend({
     const map = getMap()
 
     // Create the image layer
-    const imageLayer = new this.$_azureMaps.atlas.layer.ImageLayer(
+    this.$data.imageLayer = new this.$_azureMaps.atlas.layer.ImageLayer(
       this.options || {},
       this.id || `azure-map-image-layer-${state.id++}`
     )
 
-    this.$emit(AzureMapImageLayerEvent.Created, imageLayer)
+    this.$emit(AzureMapImageLayerEvent.Created, this.$data.imageLayer)
 
     // Watch for options changes
     this.$watch(
       'options',
       (newOptions: atlas.ImageLayerOptions | null) => {
-        imageLayer.setOptions(newOptions || {})
+        this.$data.imageLayer.setOptions(newOptions || {})
       },
       {
         deep: true,
@@ -62,24 +66,28 @@ export default Vue.extend({
     )
 
     // Add the layer to the map
-    map.layers.add(imageLayer)
-
-    // Remove the layer when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.layers.remove(imageLayer)
-    })
+    map.layers.add(this.$data.imageLayer)
 
     // Add the layer events to the map
     addMapEventListeners({
       map,
-      target: imageLayer,
-      listeners: this.$listeners,
+      target: this.$data.imageLayer,
+      listeners: this.$attrs,
       reservedEventTypes: Object.values(AzureMapImageLayerEvent),
     })
   },
+  unmounted() {
+    // Look for the injected function that retreives the map instance
+    const getMap = getMapInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+    map.layers.remove(this.$data.imageLayer)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

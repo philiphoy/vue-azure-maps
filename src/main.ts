@@ -1,9 +1,11 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 import './setup'
+import VueAzureMapsPlugin from '@/plugin'
 
-Vue.config.productionTip = false
-
-new Vue({
-  render: (h) => h(App),
-}).$mount('#app')
+const app = createApp(App)
+app.use(VueAzureMapsPlugin, {
+  // Get an Azure Maps key at https://azure.com/maps
+  key: 'M25GAPje7RDBbTJjFQWY1ts6OoBnDE8BIW4-0b-5dCo',
+})
+app.mount('#app')

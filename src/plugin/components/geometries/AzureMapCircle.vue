@@ -1,16 +1,41 @@
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, h, PropType } from 'vue'
 import AzureMapPoint from './AzureMapPoint.vue'
+import { atlas } from 'types'
 
 /**
  * A Point with a circle subtype.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapCircle',
 
   functional: true,
 
   props: {
+    id: {
+      type: String,
+      default: '',
+    },
+
+    coordinates: {
+      type: Array as PropType<atlas.data.Position | null>,
+      default: null,
+    },
+
+    longitude: {
+      type: Number as PropType<number | null>,
+      default: null,
+    },
+
+    latitude: {
+      type: Number as PropType<number | null>,
+      default: null,
+    },
+
+    properties: {
+      type: Object as PropType<Record<string, unknown>>,
+      default: () => ({}),
+    },
     /**
      * The circle radius
      */
@@ -20,24 +45,24 @@ export default Vue.extend({
     },
   },
 
-  render(createElement, context) {
-    const defaultProperties = {
-      subType: 'Circle',
-      radius: context.props.radius,
-    }
+  render() {
+    // const defaultProperties = {
+    //   subType: 'Circle',
+    //   radius: this.radius,
+    // }
 
-    if (!context.data.attrs) {
-      context.data.attrs = {}
-    }
+    // if (!context.data.attrs) {
+    //   context.data.attrs = {}
+    // }
 
-    context.data.attrs.properties = context.data.attrs.properties
-      ? {
-          ...context.data.attrs.properties,
-          ...defaultProperties,
-        }
-      : defaultProperties
+    // context.data.attrs.properties = context.data.attrs.properties
+    //   ? {
+    //       ...context.data.attrs.properties,
+    //       ...defaultProperties,
+    //     }
+    //   : defaultProperties
 
-    return createElement(AzureMapPoint, context.data, context.children)
+    return h(AzureMapPoint, this.$props)
   },
 })
 </script>

@@ -5,18 +5,18 @@ import {
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapHeatMapLayerEvent {
   Created = 'created',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * Heat maps are a type of data visualization used to represent the density of data using a range of colors.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapHeatMapLayer',
 
   /**
@@ -36,7 +36,11 @@ export default Vue.extend({
       default: null,
     },
   },
-
+  data() {
+    return {
+      heatMapLayer: {} as atlas.layer.HeatMapLayer,
+    }
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -55,19 +59,19 @@ export default Vue.extend({
     const dataSource = getDataSource()
 
     // Create the heat map layer
-    const heatMapLayer = new this.$_azureMaps.atlas.layer.HeatMapLayer(
+    this.$data.heatMapLayer = new this.$_azureMaps.atlas.layer.HeatMapLayer(
       dataSource,
       this.id || `azure-map-heat-map-layer-${state.id++}`,
       this.options || undefined
     )
 
-    this.$emit(AzureMapHeatMapLayerEvent.Created, heatMapLayer)
+    this.$emit(AzureMapHeatMapLayerEvent.Created, this.$data.heatMapLayer)
 
     // Watch for options changes
     this.$watch(
       'options',
       (newOptions: atlas.HeatMapLayerOptions | null) => {
-        heatMapLayer.setOptions(newOptions || {})
+        this.$data.heatMapLayer.setOptions(newOptions || {})
       },
       {
         deep: true,
@@ -75,24 +79,24 @@ export default Vue.extend({
     )
 
     // Add the layer to the map
-    map.layers.add(heatMapLayer)
-
-    // Remove the layer when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.layers.remove(heatMapLayer)
-    })
+    map.layers.add(this.$data.heatMapLayer)
 
     // Add the layer events to the map
     addMapEventListeners({
       map,
-      target: heatMapLayer,
-      listeners: this.$listeners,
+      target: this.$data.heatMapLayer,
+      listeners: this.$attrs,
       reservedEventTypes: Object.values(AzureMapHeatMapLayerEvent),
     })
   },
-
-  render(createElement) {
-    return createElement()
+  unmounted() {
+    const getMap = getMapInjection(this)
+    if (!getMap) return
+    const map = getMap()
+    map.layers.remove(this.$data.heatMapLayer)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

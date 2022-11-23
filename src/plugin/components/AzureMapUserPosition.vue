@@ -20,7 +20,7 @@
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 enum AzureMapUserPositionEvent {
   Success = 'success',
@@ -32,13 +32,8 @@ enum AzureMapUserPositionEvent {
   Ready = 'ready',
 }
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapUserPosition',
-
-  /**
-   * Inject the `getMap` function to get the `atlas.Map` instance
-   */
-  inject: ['getMap'],
 
   components: {
     AzureMapDataSource: () =>
@@ -67,6 +62,11 @@ export default Vue.extend({
         '@/plugin/components/layers/AzureMapSymbolLayer.vue'
       ),
   },
+
+  /**
+   * Inject the `getMap` function to get the `atlas.Map` instance
+   */
+  inject: ['getMap'],
 
   props: {
     /**
@@ -119,6 +119,14 @@ export default Vue.extend({
     },
 
     /**
+     * The symbol layer options for the user position point
+     */
+    symbolLayerOptions: {
+      type: Object as PropType<null | atlas.SymbolLayerOptions>,
+      default: null,
+    },
+
+    /**
      * If `centerMapToUserPosition` is true, this options are passed to the `map.setCamera` method
      */
     cameraOptions: {
@@ -127,14 +135,6 @@ export default Vue.extend({
         | (atlas.CameraOptions & atlas.AnimationOptions)
         | (atlas.CameraBoundsOptions & atlas.AnimationOptions)
       >,
-      default: null,
-    },
-
-    /**
-     * The symbol layer options for the user position point
-     */
-    symbolLayerOptions: {
-      type: Object as PropType<null | atlas.SymbolLayerOptions>,
       default: null,
     },
 
@@ -160,13 +160,13 @@ export default Vue.extend({
         ], // Only render Point or MultiPoints in this layer.
       },
       hasPosition: false,
-      error: null as PositionError | null,
+      error: null as GeolocationPositionError | null,
     }
   },
 
   computed: {
-    circleEventName(): string | null {
-      return this.showAccuracy ? 'circle-coordinates' : null
+    circleEventName(): string {
+      return this.showAccuracy ? 'circle-coordinates' : ''
     },
 
     userPositionSymbolLayerOptions(): Record<string, unknown> {

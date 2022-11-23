@@ -1,18 +1,18 @@
 <script lang="ts">
 import { getDataSourceInjection } from '@/plugin/utils/dependency-injection'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapLineStringEvents {
   Error = 'error',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * A LineString represents a geographic curve.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapLineString',
 
   /**
@@ -37,6 +37,17 @@ export default Vue.extend({
     },
   },
 
+  unmounted() {
+    const getDataSource = getDataSourceInjection(this)
+    if (!getDataSource) return
+    const dataSource = getDataSource()
+    const shape = new this.$_azureMaps.atlas.Shape(
+      new this.$_azureMaps.atlas.data.LineString(this.coordinates || []),
+      this.id || `azure-map-line-string-${state.id++}`,
+      this.properties
+    )
+    dataSource.remove(shape)
+  },
   async created() {
     await this.validateProps()
 
@@ -70,11 +81,6 @@ export default Vue.extend({
         deep: true,
       }
     )
-
-    // Remove the shape when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      dataSource.remove(shape)
-    })
   },
 
   methods: {
@@ -104,9 +110,8 @@ export default Vue.extend({
       }
     },
   },
-
-  render(createElement) {
-    return createElement()
+  render() {
+    return () => null
   },
 })
 </script>

@@ -1,28 +1,4 @@
 import { atlas } from 'types'
-import Vue from 'vue'
-import { findParentComponentByName } from './find-parent-component-by-name'
-
-function isValidInjection(
-  vm: Vue,
-  injection: unknown | undefined,
-  injectedPropertyLabel: string,
-  componentName: string,
-  parentName?: string
-): boolean {
-  const isValid = Boolean(injection)
-
-  if (!isValid && process.env.NODE_ENV !== 'production') {
-    console.warn(
-      `Invalid <${componentName}> ${injectedPropertyLabel}.${
-        parentName && !findParentComponentByName(vm, parentName)
-          ? `\nPlease make sure <${componentName}> is a descendant of <${parentName}>.`
-          : ``
-      }`
-    )
-  }
-
-  return isValid
-}
 
 export function getInjection<T>({
   vm,
@@ -30,23 +6,13 @@ export function getInjection<T>({
   injectedPropertyLabel,
   sourceComponentName,
 }: GetInjectionConfig): T | undefined {
-  const injection = (vm as Record<string, any>)[injectionName]
-
-  if (
-    !isValidInjection(
-      vm,
-      injection,
-      injectedPropertyLabel,
-      vm.$options.name || '',
-      sourceComponentName
-    )
-  )
-    return
-
+  const injection = vm[injectionName]
   return injection as T
 }
 
-export function getMapInjection(vm: Vue): (() => atlas.Map) | undefined {
+export function getMapInjection(
+  vm: Record<string, any>
+): (() => atlas.Map) | undefined {
   return getInjection<() => atlas.Map>({
     vm: vm,
     injectionName: 'getMap',
@@ -56,7 +22,7 @@ export function getMapInjection(vm: Vue): (() => atlas.Map) | undefined {
 }
 
 export function getDataSourceInjection(
-  vm: Vue
+  vm: Record<string, any>
 ): (() => atlas.source.DataSource) | undefined {
   return getInjection<() => atlas.source.DataSource>({
     vm: vm,
@@ -67,7 +33,7 @@ export function getDataSourceInjection(
 }
 
 export interface GetInjectionConfig {
-  vm: Vue
+  vm: Record<string, any>
   injectionName: string
   injectedPropertyLabel: string
   sourceComponentName: string

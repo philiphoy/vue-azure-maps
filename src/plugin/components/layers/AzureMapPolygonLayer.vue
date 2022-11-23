@@ -5,18 +5,18 @@ import {
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapPolygonLayerEvent {
   Created = 'created',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * A symbol layer uses text or icons to render point-based data wrapped in the DataSource as symbols on the map.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapPolygonLayer',
 
   /**
@@ -31,12 +31,16 @@ export default Vue.extend({
       default: '',
     },
 
-    options: {
+    lineOptions: {
       type: Object as PropType<atlas.PolygonLayerOptions | null>,
       default: null,
     },
   },
-
+  data() {
+    return {
+      polygonLayer: {} as atlas.layer.PolygonLayer,
+    }
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -55,19 +59,19 @@ export default Vue.extend({
     const dataSource = getDataSource()
 
     // Create the polygon layer
-    const polygonLayer = new this.$_azureMaps.atlas.layer.PolygonLayer(
+    this.$data.polygonLayer = new this.$_azureMaps.atlas.layer.PolygonLayer(
       dataSource,
       this.id || `azure-map-polygon-layer-${state.id++}`,
-      this.options || undefined
+      this.lineOptions || undefined
     )
 
-    this.$emit(AzureMapPolygonLayerEvent.Created, polygonLayer)
+    this.$emit(AzureMapPolygonLayerEvent.Created, this.$data.polygonLayer)
 
     // Watch for options changes
     this.$watch(
       'options',
       (newOptions: atlas.PolygonLayerOptions | null) => {
-        polygonLayer.setOptions(newOptions || {})
+        this.$data.polygonLayer.setOptions(newOptions || {})
       },
       {
         deep: true,
@@ -75,24 +79,28 @@ export default Vue.extend({
     )
 
     // Add the layer to the map
-    map.layers.add(polygonLayer)
-
-    // Remove the layer when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.layers.remove(polygonLayer)
-    })
+    map.layers.add(this.$data.polygonLayer)
 
     // Add the layer events to the map
     addMapEventListeners({
       map,
-      target: polygonLayer,
-      listeners: this.$listeners,
+      target: this.$data.polygonLayer,
+      listeners: this.$attrs,
       reservedEventTypes: Object.values(AzureMapPolygonLayerEvent),
     })
   },
+  unmounted() {
+    // Look for the injected function that retreives the map instance
+    const getMap = getMapInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+    map.layers.remove(this.$data.polygonLayer)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

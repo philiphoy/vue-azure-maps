@@ -67,7 +67,7 @@ export class GeolocationControl implements atlas.Control {
   private _watchId!: number | null
   private _isActive = false
   private _updateMapCamera = true
-  private _lastKnownPosition!: Position
+  private _lastKnownPosition!: GeolocationPosition
 
   private _gpsArrowIcon =
     '<div style="{transform}"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><g transform="translate(2 2)"><polygon points="12,0 0,24 12,17 24,24" stroke-width="2" stroke="white" fill="{color}"/></g></svg></div>'
@@ -99,7 +99,7 @@ export class GeolocationControl implements atlas.Control {
     if (options) {
       if (options.positionOptions) {
         this._options.positionOptions = Object.assign(
-          this._options.positionOptions,
+          this._options.positionOptions || {},
           options.positionOptions
         )
       }
@@ -127,7 +127,7 @@ export class GeolocationControl implements atlas.Control {
    ***************************/
 
   /** Gets the last known position from the geolocation control. */
-  public getLastKnownPosition(): Position {
+  public getLastKnownPosition(): GeolocationPosition {
     return this._lastKnownPosition
   }
 
@@ -214,7 +214,7 @@ export class GeolocationControl implements atlas.Control {
       this._map.markers.remove(this._gpsMarker)
     }
 
-    ;(this._map as atlas.Map | null) = null
+    ; (this._map as atlas.Map | null) = null
   }
 
   /** Gets the options of the geolocation control. */
@@ -293,7 +293,7 @@ export class GeolocationControl implements atlas.Control {
 
         if (Object.keys(opt).length > 0) {
           this._options.positionOptions = Object.assign(
-            this._options.positionOptions,
+            this._options.positionOptions || {},
             opt
           )
           this._stopTracking()
@@ -455,7 +455,7 @@ export class GeolocationControl implements atlas.Control {
    * Callback for when an error occurs when getting the users location.
    * @param position The GPS position information.
    */
-  private _onGpsSuccess = (position: Position) => {
+  private _onGpsSuccess = (position: GeolocationPosition) => {
     this._lastKnownPosition = position
 
     if (this._isActive) {
@@ -506,7 +506,7 @@ export class GeolocationControl implements atlas.Control {
    * Callback for when an error occurs when getting the users location.
    * @param error The error that occured.
    */
-  private _onGpsError = (error: PositionError) => {
+  private _onGpsError = (error: GeolocationPositionError) => {
     this._watchId = null
     this._isActive = false
     this._updateState()

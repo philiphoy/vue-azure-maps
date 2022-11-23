@@ -71,7 +71,7 @@ import {
   AzureMapSpiderClusterManager,
 } from '@/plugin'
 import { atlas } from 'types'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 type CustomPoint = {
   longitude: number
@@ -79,7 +79,7 @@ type CustomPoint = {
   properties: Record<string, unknown>
 }
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapSpiderClusterManagerExample',
 
   components: {
@@ -172,7 +172,8 @@ export default Vue.extend({
     ): void {
       // Look for the point based on a unique key
       const currentPoint = this.points.find(
-        (point) => point.properties.name === shape.getProperties().name
+        (point: CustomPoint) =>
+          point.properties.name === shape.getProperties().name
       )
 
       if (currentPoint) {
@@ -181,10 +182,10 @@ export default Vue.extend({
         if (cluster) {
           this.showPopup(cluster.geometry.coordinates, [0, 0])
         } else {
-          this.showPopup(shape.getCoordinates() as atlas.data.Position, [
-            0,
-            -20,
-          ])
+          this.showPopup(
+            shape.getCoordinates() as atlas.data.Position,
+            [0, -20]
+          )
         }
       }
     },

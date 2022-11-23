@@ -3,12 +3,12 @@ import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 /**
  * Adds a custom HTML such as an image file to the map as an HTML Marker.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapHtmlMarker',
 
   /**
@@ -99,7 +99,11 @@ export default Vue.extend({
       default: null,
     },
   },
-
+  data() {
+    return {
+      marker: null as atlas.HtmlMarker | null,
+    }
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -110,7 +114,7 @@ export default Vue.extend({
     const map = getMap()
 
     // Create the HTML marker
-    const marker = new this.$_azureMaps.atlas.HtmlMarker(
+    this.$data.marker = new this.$_azureMaps.atlas.HtmlMarker(
       getOptionsFromProps({ props: this.$props })
     )
 
@@ -128,29 +132,34 @@ export default Vue.extend({
           props: this.$props,
         })
         if (newOptions) {
-          marker.setOptions(newOptions)
+          if (this.$data.marker === null) return
+          this.$data.marker.setOptions(newOptions)
         }
       }
     )
 
     // Add the marker to the map
-    map.markers.add(marker)
-
-    // Remove the marker when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.markers.remove(marker)
-    })
+    map.markers.add(this.$data.marker)
 
     // Add the html marker events to the map
     addMapEventListeners({
       map,
-      target: marker,
-      listeners: this.$listeners,
+      target: this.$data.marker,
+      listeners: this.$attrs,
     })
   },
+  unmounted() {
+    const getMap = getMapInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+    if (this.$data.marker === null) return
+    map.markers.remove(this.$data.marker)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

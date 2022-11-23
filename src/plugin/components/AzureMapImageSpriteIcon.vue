@@ -1,6 +1,6 @@
 <script lang="ts">
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 enum AzureMapImageSpriteIconEvent {
   Error = 'error',
@@ -11,7 +11,7 @@ enum AzureMapImageSpriteIconEvent {
 /**
  * Adds an icon image to the map's image sprite for use with symbols and patterns.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapImageSpriteIcon',
 
   /**
@@ -38,7 +38,6 @@ export default Vue.extend({
       required: true,
     },
   },
-
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -53,18 +52,22 @@ export default Vue.extend({
       .add(this.id, this.icon)
       .then(() => {
         this.$emit(AzureMapImageSpriteIconEvent.Added, this.id)
-
-        // Remove the icon when the component is destroyed
-        this.$once('hook:destroyed', () => {
-          map.imageSprite.remove(this.id)
-          this.$emit(AzureMapImageSpriteIconEvent.Removed, this.id)
-        })
       })
       .catch((error) => this.$emit(AzureMapImageSpriteIconEvent.Error, error))
   },
+  unmounted() {
+    // Look for the injected function that retreives the map instance
+    const getMap = getMapInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+    map.imageSprite.remove(this.id)
+    this.$emit(AzureMapImageSpriteIconEvent.Removed, this.id)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

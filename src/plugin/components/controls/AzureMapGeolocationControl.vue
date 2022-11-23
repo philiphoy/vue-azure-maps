@@ -3,13 +3,13 @@ import { GeolocationControl } from '@/plugin/modules/controls/geolocation'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import { atlas } from 'types'
 import { ControlPosition, ControlStyle } from 'azure-maps-control'
-import Vue, { PropType } from 'vue'
+import { defineComponent, h, PropType } from 'vue'
 import AzureMapControl from './AzureMapControl.vue'
 
 /**
  * A control that uses the browser's geolocation API to locate the user on the map.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapGeolocationControl',
 
   props: {
@@ -69,24 +69,24 @@ export default Vue.extend({
     },
   },
 
-  render(createElement) {
+  render() {
     // Construct a geolocation control
-    return createElement(AzureMapControl, {
-      props: {
-        control: new GeolocationControl(
-          this.$_azureMaps.atlas,
-          getOptionsFromProps({
-            props: this.$props,
-            excludedPropKeys: ['position'],
-            reservedAttributes: {
-              controlStyle: 'style',
-            },
-          })
-        ),
-        options: {
-          position: this.position,
-        } as atlas.ControlOptions,
-      },
+    return h(AzureMapControl, {
+
+      control: new GeolocationControl(
+        this.$_azureMaps.atlas,
+        getOptionsFromProps({
+          props: this.$props,
+          excludedPropKeys: ['position'],
+          reservedAttributes: {
+            controlStyle: 'style',
+          },
+        })
+      ),
+      options: {
+        position: this.position,
+      } as atlas.ControlOptions,
+
     })
   },
 })

@@ -6,11 +6,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import AzureMapExample from './components/vue-azure-maps/AzureMapExample.vue'
 // import AzureMapSpiderClusterManagerExample from './components/vue-azure-maps/AzureMapSpiderClusterManagerExample.vue'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'App',
 
   components: {

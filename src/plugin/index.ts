@@ -1,6 +1,5 @@
 import 'azure-maps-control/dist/atlas.min.css'
-import VueAzureMaps from './vue-azure-maps'
-
+import { VueAzureMapsPlugin } from './install'
 //===
 // Components
 //===
@@ -74,4 +73,4 @@ export {
   AzureMapBubbleLayer,
 }
 
-export default VueAzureMaps
+export default VueAzureMapsPlugin

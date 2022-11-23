@@ -1,10 +1,10 @@
 import { atlas } from 'types'
-import Vue, { WatchOptions } from 'vue'
+import { WatchOptions } from 'vue'
 import { capitalize } from '.'
 import addMapEventListeners from './add-map-event-listeners'
 
 export function bindProp(
-  vm: Vue,
+  vm: Record<string, any>,
   map: atlas.Map,
   {
     propName,
@@ -95,7 +95,7 @@ export function bindProps({ vm, map, props }: BindPropsConfig): () => void {
 }
 
 export interface BindPropsConfig {
-  vm: Vue
+  vm: Record<string, any>
   map: atlas.Map
   props: PropBindingConfig[]
 }

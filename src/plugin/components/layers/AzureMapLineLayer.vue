@@ -5,18 +5,18 @@ import {
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapLineLayerEvent {
   Created = 'created',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * Renders line data on the map.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapLineLayer',
 
   /**
@@ -36,7 +36,11 @@ export default Vue.extend({
       default: null,
     },
   },
-
+  data() {
+    return {
+      lineLayer: {} as atlas.layer.LineLayer,
+    }
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -55,18 +59,18 @@ export default Vue.extend({
     const dataSource = getDataSource()
 
     // Create the line layer
-    const lineLayer = new this.$_azureMaps.atlas.layer.LineLayer(
+    this.$data.lineLayer = new this.$_azureMaps.atlas.layer.LineLayer(
       dataSource,
       this.id || `azure-map-line-layer-${state.id++}`,
       this.options || undefined
     )
 
-    this.$emit(AzureMapLineLayerEvent.Created, lineLayer)
+    this.$emit(AzureMapLineLayerEvent.Created, this.$data.lineLayer)
 
     this.$watch(
       'options',
       (newOptions: atlas.LineLayerOptions | null) => {
-        lineLayer.setOptions(newOptions || {})
+        this.$data.lineLayer.setOptions(newOptions || {})
       },
       {
         deep: true,
@@ -74,24 +78,28 @@ export default Vue.extend({
     )
 
     // Add the layer to the map
-    map.layers.add(lineLayer)
-
-    // Remove the layer when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.layers.remove(lineLayer)
-    })
+    map.layers.add(this.$data.lineLayer)
 
     // Add the layer events to the map
     addMapEventListeners({
       map,
-      target: lineLayer,
-      listeners: this.$listeners,
+      target: this.$data.lineLayer,
+      listeners: this.$attrs,
       reservedEventTypes: Object.values(AzureMapLineLayerEvent),
     })
   },
+  unmounted() {
+    // Look for the injected function that retreives the map instance
+    const getMap = getMapInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+    map.layers.remove(this.$data.lineLayer)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

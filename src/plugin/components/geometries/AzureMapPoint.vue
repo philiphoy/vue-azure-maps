@@ -6,7 +6,7 @@ import {
 import bindProps from '@/plugin/utils/bind-props'
 import { looseEqual } from '@/plugin/utils'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapPointEvent {
   GeometryCreated = 'geometry-created',
@@ -15,12 +15,12 @@ enum AzureMapPointEvent {
   CircleCoordinates = 'circle-coordinates',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * A Point that represents a geographic position.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapPoint',
 
   /**
@@ -55,7 +55,13 @@ export default Vue.extend({
       default: () => ({}),
     },
   },
-
+  data() {
+    return {
+      unbindProps: function () { },
+      point: null as atlas.data.Point | null,
+      shape: null as atlas.Shape | null,
+    }
+  },
   computed: {
     pointCoordinates(): atlas.data.Position | null {
       // If coordinates are not provided,
@@ -78,7 +84,6 @@ export default Vue.extend({
       return { ...(this.properties || {}) }
     },
   },
-
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -97,38 +102,38 @@ export default Vue.extend({
     const dataSource = getDataSource()
 
     // Create a point geometry
-    const point = new this.$_azureMaps.atlas.data.Point(
+    this.$data.point = new this.$_azureMaps.atlas.data.Point(
       this.pointCoordinates || []
     )
 
-    this.$emit(AzureMapPointEvent.GeometryCreated, point)
+    this.$emit(AzureMapPointEvent.GeometryCreated, this.$data.point)
 
     // Create a shape from the point geometry
-    const shape = new this.$_azureMaps.atlas.Shape(
-      point,
+    this.$data.shape = new this.$_azureMaps.atlas.Shape(
+      this.$data.point,
       this.id || `azure-map-point-${state.id++}`,
       this.properties
     )
 
-    this.$emit(AzureMapPointEvent.ShapeCreated, shape)
+    this.$emit(AzureMapPointEvent.ShapeCreated, this.$data.shape)
 
     // If the point has a circle polygon,
     // emit the coordinates of the circle
-    if (shape.isCircle()) {
-      this.emitCircleCoordinates(shape)
+    if (this.$data.shape.isCircle()) {
+      this.emitCircleCoordinates(this.$data.shape)
     }
 
     // Add the shape to the data source.
-    dataSource.add(shape)
+    dataSource.add(this.$data.shape)
 
     // Bind component props
-    const unbindProps = bindProps({
+    this.$data.unbindProps = bindProps({
       vm: this,
       map,
       props: [
         {
           propName: 'coordinates',
-          target: shape,
+          target: this.$data.shape,
           targetEventName: 'shapechanged',
           isSetAsObject: false,
           identity: (
@@ -138,29 +143,29 @@ export default Vue.extend({
         },
         {
           propName: 'longitude',
-          target: shape,
+          target: this.$data.shape,
           targetMethodName: 'coordinates',
           targetEventName: 'shapechanged',
           setter: (longitude: number) =>
             this.latitude !== null &&
-            shape.setCoordinates([longitude, this.latitude]),
+            this.$data.shape?.setCoordinates([longitude, this.latitude]),
           isSetAsObject: false,
           retriever: (coordinates: atlas.data.Position) => coordinates[0],
         },
         {
           propName: 'latitude',
-          target: shape,
+          target: this.$data.shape,
           targetMethodName: 'coordinates',
           targetEventName: 'shapechanged',
           setter: (latitude: number) =>
             this.longitude !== null &&
-            shape.setCoordinates([this.longitude, latitude]),
+            this.$data.shape?.setCoordinates([this.longitude, latitude]),
           isSetAsObject: false,
           retriever: (coordinates: atlas.data.Position) => coordinates[1],
         },
         {
           propName: 'pointProperties',
-          target: shape,
+          target: this.$data.shape,
           targetMethodName: 'properties',
           targetEventName: 'shapechanged',
           isSetAsObject: false,
@@ -178,11 +183,11 @@ export default Vue.extend({
             }
 
             if (
-              shape.isCircle() &&
+              this.$data.shape?.isCircle() &&
               (newValue.radius !== oldValue.radius ||
                 newValue.subType !== oldValue.subType)
             ) {
-              this.emitCircleCoordinates(shape)
+              this.emitCircleCoordinates(this.$data.shape)
             }
           },
           watchOptions: {
@@ -190,12 +195,6 @@ export default Vue.extend({
           },
         },
       ],
-    })
-
-    // Remove the shape when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      dataSource.remove(shape)
-      unbindProps()
     })
   },
 
@@ -209,9 +208,20 @@ export default Vue.extend({
       )
     },
   },
+  removed() {
+    // Look for the injected function that retreives the data source instance
+    const getDataSource = getDataSourceInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getDataSource) return
+
+    // Retrieve the data source from the injected function
+    const dataSource = getDataSource()
+    if (this.$data.shape === null) return
+    dataSource.remove(this.$data.shape)
+    this.$data.unbindProps()
+  },
+  render() {
+    return () => null
   },
 })
 </script>

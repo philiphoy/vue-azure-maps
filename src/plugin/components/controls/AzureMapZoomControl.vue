@@ -1,13 +1,13 @@
 <script lang="ts">
 import { atlas } from 'types'
 import { ControlPosition, ControlStyle } from 'azure-maps-control'
-import Vue, { PropType } from 'vue'
+import { defineComponent, h, PropType } from 'vue'
 import AzureMapControl from './AzureMapControl.vue'
 
 /**
  * Zoom control adds the ability to zoom in and out of the `atlas.Map`.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapZoomControl',
 
   props: {
@@ -42,18 +42,16 @@ export default Vue.extend({
     },
   },
 
-  render(createElement) {
+  render() {
     // Construct a zoom control
-    return createElement(AzureMapControl, {
-      props: {
-        control: new this.$_azureMaps.atlas.control.ZoomControl({
-          zoomDelta: this.zoomDelta,
-          style: this.controlStyle,
-        }),
-        options: {
-          position: this.position,
-        } as atlas.ControlOptions,
-      },
+    return h(AzureMapControl, {
+      control: new this.$_azureMaps.atlas.control.ZoomControl({
+        zoomDelta: this.zoomDelta,
+        style: this.controlStyle,
+      }),
+      options: {
+        position: this.position,
+      } as atlas.ControlOptions,
     })
   },
 })

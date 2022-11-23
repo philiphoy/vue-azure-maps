@@ -1,10 +1,14 @@
 module.exports = {
   root: true,
+  globals: {
+    GeolocationPositionError: 'writable',
+    PositionOptions: 'writable',
+  },
   env: {
     node: true,
   },
   extends: [
-    'plugin:vue/recommended',
+    'plugin:vue/vue3-recommended',
     'eslint:recommended',
     '@vue/typescript/recommended',
     '@vue/prettier',
@@ -14,13 +18,13 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     // https://vuejs.org/v2/style-guide/#Private-property-names-essential
-    '@typescript-eslint/camelcase': [
-      'error',
-      {
-        properties: 'always',
-        allow: ['$_azureMaps'],
-      },
-    ],
+    //  '@typescript-eslint/camelcase': [
+    //  'error',
+    //  {
+    //    properties: 'always',
+    //    allow: ['$_azureMaps'],
+    //  },
+    //],
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': [
       'error',
@@ -68,6 +72,7 @@ module.exports = {
   },
   parserOptions: {
     ecmaVersion: 2020,
+    parser: '@typescript-eslint/parser',
   },
   overrides: [
     {

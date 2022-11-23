@@ -2,13 +2,13 @@
 import { FullscreenControl } from '@/plugin/modules/controls/fullscreen'
 import { atlas } from 'types'
 import { ControlPosition, ControlStyle } from 'azure-maps-control'
-import Vue, { PropType } from 'vue'
+import { defineComponent, h, PropType } from 'vue'
 import AzureMapControl from './AzureMapControl.vue'
 
 /**
  * Fullscreen control adds the ability to toggle the map from its defined size to a fullscreen size.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapFullscreenControl',
 
   props: {
@@ -42,18 +42,18 @@ export default Vue.extend({
     },
   },
 
-  render(createElement) {
+  render() {
     // Construct a fullscreen control
-    return createElement(AzureMapControl, {
-      props: {
-        control: new FullscreenControl({
-          style: this.controlStyle,
-          hideIfUnsupported: this.hideIfUnsupported,
-        }),
-        options: {
-          position: this.position,
-        } as atlas.ControlOptions,
-      },
+    return h(AzureMapControl, {
+
+      control: new FullscreenControl({
+        style: this.controlStyle,
+        hideIfUnsupported: this.hideIfUnsupported,
+      }),
+      options: {
+        position: this.position,
+      } as atlas.ControlOptions,
+
     })
   },
 })

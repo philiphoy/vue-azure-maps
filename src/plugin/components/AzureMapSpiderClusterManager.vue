@@ -6,14 +6,14 @@ import {
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 enum AzureMapSpiderClusterManagerEvent {
   FeatureSelected = 'feature-selected',
   FeatureUnselected = 'feature-unselected',
 }
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapSpiderClusterManager',
 
   /**
@@ -86,6 +86,11 @@ export default Vue.extend({
       default: undefined,
     },
   },
+  data() {
+    return {
+      spiderManager: null as SpiderClusterManager | null,
+    }
+  },
 
   computed: {
     spiderManagerOptionsProps(): Record<string, unknown> {
@@ -110,7 +115,6 @@ export default Vue.extend({
       }
     },
   },
-
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -128,7 +132,7 @@ export default Vue.extend({
       props: this.spiderManagerOptionsProps,
     })
 
-    const spiderManager = new SpiderClusterManager(
+    this.$data.spiderManager = new SpiderClusterManager(
       this.$_azureMaps.atlas,
       map,
       this.clusterLayer,
@@ -162,23 +166,18 @@ export default Vue.extend({
         return values
       },
       () => {
-        spiderManager.setOptions(
+        if (!this.$data.spiderManager) return
+        this.$data.spiderManager.setOptions(
           getOptionsFromProps({
             props: this.spiderManagerOptionsProps,
           })
         )
       }
     )
-
-    // When the component is destroyed
-    this.$once('hook:destroyed', () => {
-      // Dispose the spider manager
-      spiderManager.dispose()
-    })
   },
-
-  render(createElement) {
-    return createElement()
+  unmounted() {
+    if (!this.$data.spiderManager) return
+    this.$data.spiderManager.dispose()
   },
 })
 </script>

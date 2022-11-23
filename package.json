@@ -53,39 +53,39 @@
     ]
   },
   "dependencies": {
+    "@vue/compat": "^3.1.0",
     "azure-maps-control": "^2.0.31",
-    "vue": "^2.6.12"
+    "vue": "^3.1.0"
   },
   "devDependencies": {
     "@types/jest": "^25.1.4",
-    "@typescript-eslint/eslint-plugin": "^2.26.0",
-    "@typescript-eslint/parser": "^2.26.0",
-    "@vue/cli-plugin-babel": "^4.2.3",
-    "@vue/cli-plugin-eslint": "^4.2.3",
-    "@vue/cli-plugin-typescript": "^4.2.3",
-    "@vue/cli-plugin-unit-jest": "^4.2.3",
-    "@vue/cli-service": "^4.2.3",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-eslint": "~5.0.8",
+    "@vue/cli-plugin-typescript": "~5.0.8",
+    "@vue/cli-plugin-unit-jest": "~5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/compiler-sfc": "^3.1.0",
     "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/eslint-config-typescript": "^5.0.2",
+    "@vue/eslint-config-typescript": "^9.1.0",
     "@vue/test-utils": "^1.0.0-beta.32",
     "chalk": "^3.0.0",
     "conventional-changelog-cli": "^2.0.31",
     "enquirer": "^2.3.4",
-    "eslint": "6.8.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-vue": "6.2.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.0.3",
     "execa": "^4.0.0",
-    "jest": "^25.2.4",
+    "jest": "^27.1.0",
     "lint-staged": "^10.1.1",
     "minimist": "^1.2.5",
-    "prettier": "^2.0.2",
+    "prettier": "^2.4.1",
     "semver": "^7.1.3",
     "ts-jest": "^25.3.0",
-    "typescript": "^3.8.3",
-    "vue-template-compiler": "^2.6.12",
-    "vuepress": "^1.4.0"
-  },
-  "peerDependencies": {
-    "vue": "^2.6.12"
+    "typescript": "~4.5.5",
+    "vuepress": "^1.4.0",
+    "@vue/vue3-jest": "^27.0.0-alpha.3"
   }
 }

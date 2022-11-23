@@ -5,18 +5,18 @@ import {
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { reactive, defineComponent, PropType } from 'vue'
 
 enum AzureMapBubbleLayerEvent {
   Created = 'created',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * Renders Point objects as scalable circles (bubbles).
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapBubbleLayer',
 
   /**
@@ -24,7 +24,6 @@ export default Vue.extend({
    * Inject the `getDataSource` function to get the `atlas.source.DataSource` instance
    */
   inject: ['getMap', 'getDataSource'],
-
   props: {
     id: {
       type: String,
@@ -36,7 +35,21 @@ export default Vue.extend({
       default: null,
     },
   },
+  data() {
+    return {
+      bubbleLayer: {} as atlas.layer.BubbleLayer,
+    }
+  },
+  unmounted() {
+    const getMap = getMapInjection(this)
 
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+
+    map.layers.remove(this.$data.bubbleLayer)
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -55,19 +68,19 @@ export default Vue.extend({
     const dataSource = getDataSource()
 
     // Create the bubble layer
-    const bubbleLayer = new this.$_azureMaps.atlas.layer.BubbleLayer(
+    this.$data.bubbleLayer = new this.$_azureMaps.atlas.layer.BubbleLayer(
       dataSource,
       this.id || `azure-map-bubble-layer-${state.id++}`,
       this.options || undefined
     )
 
-    this.$emit(AzureMapBubbleLayerEvent.Created, bubbleLayer)
+    this.$emit(AzureMapBubbleLayerEvent.Created, this.$data.bubbleLayer)
 
     // Watch for options changes
     this.$watch(
       'options',
       (newOptions: atlas.BubbleLayerOptions | null) => {
-        bubbleLayer.setOptions(newOptions || {})
+        this.bubbleLayer.setOptions(newOptions || {})
       },
       {
         deep: true,
@@ -75,24 +88,18 @@ export default Vue.extend({
     )
 
     // Add the layer to the map
-    map.layers.add(bubbleLayer)
-
-    // Remove the layer when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.layers.remove(bubbleLayer)
-    })
+    map.layers.add(this.$data.bubbleLayer)
 
     // Add the layer events to the map
     addMapEventListeners({
       map,
-      target: bubbleLayer,
-      listeners: this.$listeners,
+      target: this.bubbleLayer,
+      listeners: this.$attrs,
       reservedEventTypes: Object.values(AzureMapBubbleLayerEvent),
     })
   },
-
-  render(createElement) {
-    return createElement()
+  render() {
+    return () => null
   },
 })
 </script>

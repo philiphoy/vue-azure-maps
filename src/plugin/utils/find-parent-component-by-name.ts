@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { ComponentPublicInstance } from 'vue'
 
 /**
  * @name findParentComponentByName
@@ -33,9 +33,9 @@ import Vue from 'vue'
  * })
  */
 export function findParentComponentByName(
-  vm: Vue,
+  vm: ComponentPublicInstance,
   componentName: string
-): Vue | undefined {
+): ComponentPublicInstance | undefined {
   //
   //  Components tree:
   //  +---------------------+  \ return undefined, <Child/> is not a descendant of <App/> \
@@ -55,7 +55,7 @@ export function findParentComponentByName(
   //  +---------------------+
   //
 
-  let component: Vue | undefined
+  let component: ComponentPublicInstance | undefined
   let parent = vm.$parent
 
   while (parent && !component) {

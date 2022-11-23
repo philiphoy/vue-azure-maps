@@ -1,24 +1,20 @@
 import * as atlasJs from 'azure-maps-control/dist/atlas.min.js'
 import { VueAzureMapsPluginOptions } from 'types'
-import Vue, { VueConstructor } from 'vue'
+import { App, Plugin } from 'vue'
 import VueAzureMaps from './vue-azure-maps'
 
-export let VueWithPlugin: VueConstructor<Vue> | undefined
+export const VueAzureMapsPlugin: Plugin = {
+  install(app: App<any>, options: VueAzureMapsPluginOptions) {
+    // makes ColoredText available in your Vue.js app as either "$this.coloredText" (in your Source) or "{{ $coloredText }}" in your templates
 
-export function install(
-  _Vue: VueConstructor<Vue>,
-  options?: VueAzureMapsPluginOptions
-): void {
-  if (Vue && _Vue === VueWithPlugin) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(
-        '[vue-azure-maps] already installed. Vue.use(VueAzureMaps) should be called only once.'
-      )
+    if (app.config.globalProperties.$_azureMaps !== undefined) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(
+          '[vue-azure-maps] already installed. Vue.use(VueAzureMaps) should be called only once.'
+        )
+      }
+      return
     }
-    return
-  }
-
-  VueWithPlugin = _Vue
-
-  VueWithPlugin.prototype.$_azureMaps = new VueAzureMaps(atlasJs, options)
+    app.config.globalProperties.$_azureMaps = new VueAzureMaps(atlasJs, options)
+  },
 }

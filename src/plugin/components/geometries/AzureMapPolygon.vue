@@ -1,18 +1,18 @@
 <script lang="ts">
 import { getDataSourceInjection } from '@/plugin/utils/dependency-injection'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { reactive, defineComponent, PropType } from 'vue'
 
 enum AzureMapPolygonEvents {
   Error = 'error',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * A Polygon represents a geographic polygon.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapPolygon',
 
   /**
@@ -38,7 +38,21 @@ export default Vue.extend({
       default: () => ({}),
     },
   },
+  unmounted() {
+    const getDataSource = getDataSourceInjection(this)
 
+    if (!getDataSource) return
+
+    // Retrieve the data source from the injected function
+    const dataSource = getDataSource()
+    const shape = new this.$_azureMaps.atlas.Shape(
+      new this.$_azureMaps.atlas.data.Polygon(this.coordinates || []),
+      this.id || `azure-map-polygon-${state.id++}`,
+      this.properties
+    )
+
+    dataSource.remove(shape)
+  },
   async created() {
     await this.validateProps()
 
@@ -74,11 +88,6 @@ export default Vue.extend({
         deep: true,
       }
     )
-
-    // Remove the shape when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      dataSource.remove(shape)
-    })
   },
 
   methods: {
@@ -110,9 +119,8 @@ export default Vue.extend({
       }
     },
   },
-
-  render(createElement) {
-    return createElement()
+  render() {
+    return () => null
   },
 })
 </script>

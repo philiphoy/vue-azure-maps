@@ -2,18 +2,18 @@
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
 import { atlas } from 'types'
-import Vue, { PropType } from 'vue'
+import { reactive, defineComponent, PropType } from 'vue'
 
 enum AzureMapTileLayerEvent {
   Created = 'created',
 }
 
-const state = Vue.observable({ id: 0 })
+const state = reactive({ id: 0 })
 
 /**
  * Tile layers allow you to superimpose images on top of Azure Maps base map tiles.
  */
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapTileLayer',
 
   /**
@@ -32,7 +32,11 @@ export default Vue.extend({
       default: null,
     },
   },
-
+  data() {
+    return {
+      tileLayer: {} as atlas.layer.TileLayer,
+    }
+  },
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)
@@ -43,18 +47,18 @@ export default Vue.extend({
     const map = getMap()
 
     // Create the tile layer
-    const tileLayer = new this.$_azureMaps.atlas.layer.TileLayer(
+    this.$data.tileLayer = new this.$_azureMaps.atlas.layer.TileLayer(
       this.options || undefined,
       this.id || `azure-map-tile-layer-${state.id++}`
     )
 
-    this.$emit(AzureMapTileLayerEvent.Created, tileLayer)
+    this.$emit(AzureMapTileLayerEvent.Created, this.$data.tileLayer)
 
     // Watch for options changes
     this.$watch(
       'options',
       (newOptions: atlas.TileLayerOptions | null) => {
-        tileLayer.setOptions(newOptions || {})
+        this.$data.tileLayer.setOptions(newOptions || {})
       },
       {
         deep: true,
@@ -62,24 +66,29 @@ export default Vue.extend({
     )
 
     // Add the layer to the map
-    map.layers.add(tileLayer)
-
-    // Remove the layer when the component is destroyed
-    this.$once('hook:destroyed', () => {
-      map.layers.remove(tileLayer)
-    })
+    map.layers.add(this.$data.tileLayer)
 
     // Add the layer events to the map
     addMapEventListeners({
       map,
-      target: tileLayer,
-      listeners: this.$listeners,
+      target: this.$data.tileLayer,
+      listeners: this.$attrs,
       reservedEventTypes: Object.values(AzureMapTileLayerEvent),
     })
   },
+  unmounted() {
+    // Look for the injected function that retreives the map instance
+    const getMap = getMapInjection(this)
 
-  render(createElement) {
-    return createElement()
+    if (!getMap) return
+
+    // Retrieve the map instance from the injected function
+    const map = getMap()
+
+    map.layers.remove(this.$data.tileLayer)
+  },
+  render() {
+    return () => null
   },
 })
 </script>

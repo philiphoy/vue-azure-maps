@@ -1,10 +1,10 @@
 <template>
   <AzureMap
     v-if="showMap"
-    :map-style.sync="mapOptions.style"
-    :center.sync="mapOptions.center"
-    :view.sync="mapOptions.view"
-    :language.sync="mapOptions.language"
+    v-model:map-style="mapOptions.style"
+    v-model:center="mapOptions.center"
+    v-model:view="mapOptions.view"
+    v-model:language="mapOptions.language"
     class="AzureMap"
     @mousemove="onMouseMove"
     @mouseup="onMouseUp"
@@ -28,11 +28,11 @@
     <!-- Add an Html marker -->
     <AzureMapHtmlMarker :position="htmlMarkerOptions.position" />
 
-    <!-- Show user position with an optional accuracy circle -->
+    <!-- Show user position with an optional accuracy circle-->
     <AzureMapUserPosition
-      :symbol-layer-options="userPosition.symbolLayerOptions"
       :center-map-to-user-position="false"
       :camera-options="userPosition.cameraOptions"
+      :symbol-layer-options="symbolLayerOptions"
       :show-accuracy="true"
       :enable-high-accuracy="true"
       :polygon-layer-options="userPosition.polygonLayerOptions"
@@ -41,12 +41,12 @@
     <!-- Create a Data Source -->
     <AzureMapDataSource v-if="isCustomIconAdded">
       <!-- Add Points to the Data Source -->
-      <AzureMapPoint
-        v-for="point in points"
-        :key="point.properties.name"
-        :longitude="point.longitude"
-        :latitude="point.latitude"
-      />
+      <template v-for="point in points" :key="point.properties.name">
+        <AzureMapPoint
+          :longitude="point.longitude"
+          :latitude="point.latitude"
+        />
+      </template>
       <!-- Add a Symbol Layer to render the Points stored in the Data Source -->
       <AzureMapSymbolLayer :options="customIconSymbolLayerOptions" />
     </AzureMapDataSource>
@@ -58,14 +58,14 @@
       :cluster-max-zoom="15"
     >
       <!-- Add Points to the Data Source -->
-      <AzureMapPoint
-        v-for="point in points"
-        :key="point.properties.name"
-        :longitude="point.longitude"
-        :latitude="point.latitude"
-      />
+      <template v-for="point in points" :key="point.properties.name">
+        <AzureMapCircle
+          :longitude="point.longitude"
+          :latitude="point.latitude"
+        />
+      </template>
       <!-- Add a Bubble Layer to render the clustered Points stored in the Data Source -->
-      <AzureMapBubbleLayer :options="bubbleLayerOptions" />
+      <AzureMapBubbleLayer :symbol-options="bubbleLayerOptions" />
     </AzureMapDataSource>
 
     <!-- Create a Data Source -->
@@ -78,17 +78,15 @@
         @mousedown="onMouseDown"
       />
 
-      <template v-for="point in points">
+      <template v-for="point in points" :key="point.properties.name">
         <!-- Add Points to the Data Source -->
         <AzureMapPoint
-          :key="point.properties.name"
           :longitude="point.longitude"
           :latitude="point.latitude"
           :properties="point.properties"
         />
         <!-- Add a Popup to the map for every Point -->
         <AzureMapPopup
-          :key="`Popup-${point.properties.name}`"
           v-model="point.properties.isPopupOpen"
           :position="[point.longitude, point.latitude]"
           :pixel-offset="[0, -18]"
@@ -114,7 +112,7 @@
         :coordinates="lineString.coordinates"
       />
       <!-- Add a Line Layer to render the Line Strings stored in the Data Source -->
-      <AzureMapLineLayer :options="lineLayerOptions" />
+      <AzureMapLineLayer :line-options="lineLayerOptions" />
     </AzureMapDataSource>
 
     <!-- Create a Data Source -->
@@ -140,6 +138,7 @@ import {
   AzureMapUserPosition,
   AzureMapImageSpriteIcon,
   AzureMapPoint,
+  AzureMapCircle,
   AzureMapLineString,
   AzureMapPolygon,
   AzureMapZoomControl,
@@ -154,7 +153,7 @@ import {
   AzureMapBubbleLayer,
 } from '@/plugin'
 import { atlas } from 'types'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 type MapOptions = atlas.ServiceOptions &
   atlas.CameraOptions &
@@ -167,7 +166,7 @@ type CustomPoint = {
   properties: Record<string, unknown>
 }
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AzureMapExample',
 
   components: {
@@ -178,6 +177,7 @@ export default Vue.extend({
     AzureMapUserPosition,
     AzureMapImageSpriteIcon,
     AzureMapPoint,
+    AzureMapCircle,
     AzureMapLineString,
     AzureMapPolygon,
     AzureMapZoomControl,
@@ -210,14 +210,15 @@ export default Vue.extend({
       } as atlas.HtmlMarkerOptions,
 
       userPosition: {
+        cameraOptions: {
+          zoom: 15,
+        } as atlas.CameraOptions,
+
         symbolLayerOptions: {
           iconOptions: {
             image: 'pin-blue',
           },
         } as atlas.SymbolLayerOptions,
-        cameraOptions: {
-          zoom: 15,
-        } as atlas.CameraOptions,
 
         polygonLayerOptions: {
           fillColor: 'green',
@@ -292,7 +293,7 @@ export default Vue.extend({
     },
 
     getCustomPointByName(name: string): CustomPoint | undefined {
-      return this.points.find((p) => p.properties.name === name)
+      return this.points.find((p: CustomPoint) => p.properties.name === name)
     },
 
     onMouseEnter(e: atlas.MapMouseEvent): void {
