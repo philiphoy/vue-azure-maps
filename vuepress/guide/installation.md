@@ -20,15 +20,20 @@ Get an Azure Maps key at <https://azure.com/maps>
 
 :::
 
-When using with a module system, you must explicitly install `vue-azure-maps` via `Vue.use()`:
+When using with a module system, you must explicitly install `vue-azure-maps` via `app.use()`:
 
 ```javascript
-import VueAzureMaps from 'vue-azure-maps'
-import Vue from 'vue'
+import { createApp } from 'vue'
+import App from './App.vue'
+import './setup'
+import VueAzureMapsPlugin from '@/plugin'
 
-Vue.use(VueAzureMaps, {
+const app = createApp(App)
+app.use(VueAzureMapsPlugin, {
+  // Get an Azure Maps key at https://azure.com/maps
   key: '<Your Azure Maps key>',
 })
+app.mount('#app')
 ```
 
 You don't need to do this when using global script tags.

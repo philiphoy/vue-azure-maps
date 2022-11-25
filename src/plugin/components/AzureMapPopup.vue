@@ -14,7 +14,7 @@ import { defineComponent, PropType } from 'vue'
 
 enum AzureMapPopupEvent {
   Created = 'created',
-  Update = 'update',
+  Update = 'update:modelValue',
   Open = 'open',
   Close = 'close',
 }
@@ -24,21 +24,10 @@ enum AzureMapPopupEvent {
  */
 export default defineComponent({
   name: 'AzureMapPopup',
-  emits: {
-    created(e: atlas.Popup) { return e },
-    update(e: boolean) { return e },
-    open(e: atlas.TargetedEvent) { return e },
-    close(e: atlas.TargetedEvent) { return e },
-  },
   /**
    * Inject the `getMap` function to get the `atlas.Map` instance
    */
   inject: ['getMap'],
-
-  model: {
-    prop: 'open',
-    event: AzureMapPopupEvent.Update,
-  },
 
   props: {
     /**
@@ -55,7 +44,7 @@ export default defineComponent({
      * Opens or closes the popup,
      * compatible with `v-model` directive
      */
-    open: {
+    modelValue: {
       type: Boolean,
       default: false,
     },
@@ -111,11 +100,14 @@ export default defineComponent({
       default: null,
     },
   },
+
+  emits: Object.values(AzureMapPopupEvent),
+
   data() {
     return {
       popup: null as atlas.Popup | null,
-      unbindProps: function () { },
-      removeEventListeners: function () { },
+      unbindProps: function () {},
+      removeEventListeners: function () {},
     }
   },
   created() {
@@ -139,7 +131,7 @@ export default defineComponent({
     this.$data.popup = new this.$_azureMaps.atlas.Popup(
       getOptionsFromProps({
         props: this.$props,
-        excludedPropKeys: ['tag', 'open'],
+        excludedPropKeys: ['tag', 'modelValue'],
       })
     )
 
@@ -147,7 +139,7 @@ export default defineComponent({
 
     // Watch the open prop to show and hide the popup
     this.$watch(
-      'open',
+      'modelValue',
       (newVal: boolean) => {
         if (this.$data.popup === null) return
         if (newVal) {
@@ -215,7 +207,6 @@ export default defineComponent({
   unmounted() {
     if (this.$data.popup === null) return
     this.$data.popup.remove()
-
     // Remove the popup events attached to the map
     this.$data.removeEventListeners()
     // Unbind component props

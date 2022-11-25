@@ -13,7 +13,6 @@ enum AzureMapImageSpriteIconEvent {
  */
 export default defineComponent({
   name: 'AzureMapImageSpriteIcon',
-
   /**
    * Inject the `getMap` function to get the `atlas.Map` instance
    */
@@ -38,6 +37,7 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: Object.values(AzureMapImageSpriteIconEvent),
   created() {
     // Look for the injected function that retreives the map instance
     const getMap = getMapInjection(this)

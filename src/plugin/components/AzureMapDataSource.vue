@@ -118,6 +118,11 @@ export default defineComponent({
       default: undefined,
     },
 
+    externalSourceUrl: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+
     /**
      * The Douglas-Peucker simplification tolerance that is applied to the data when rendering (higher means simpler geometries and faster performance).
      * default `0.375`
@@ -128,7 +133,7 @@ export default defineComponent({
       default: undefined,
     },
   },
-
+  emits: Object.values(AzureMapDataSourceEvent),
   data() {
     return {
       // The data source instance
@@ -181,7 +186,9 @@ export default defineComponent({
           props: this.dataSourceOptionProps,
         })
       )
-
+      if (this.externalSourceUrl) {
+        dataSource.importDataFromUrl(this.externalSourceUrl)
+      }
       this.$emit(AzureMapDataSourceEvent.Created, dataSource)
 
       // Watch for all props changes

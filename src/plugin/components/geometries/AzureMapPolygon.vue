@@ -38,6 +38,7 @@ export default defineComponent({
       default: () => ({}),
     },
   },
+  emits: Object.values(AzureMapPolygonEvents),
   unmounted() {
     const getDataSource = getDataSourceInjection(this)
 

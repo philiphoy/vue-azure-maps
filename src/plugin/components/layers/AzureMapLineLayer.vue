@@ -31,11 +31,12 @@ export default defineComponent({
       default: '',
     },
 
-    options: {
+    lineOptions: {
       type: Object as PropType<atlas.LineLayerOptions | null>,
       default: null,
     },
   },
+  emits: Object.values(AzureMapLineLayerEvent),
   data() {
     return {
       lineLayer: {} as atlas.layer.LineLayer,
@@ -62,7 +63,7 @@ export default defineComponent({
     this.$data.lineLayer = new this.$_azureMaps.atlas.layer.LineLayer(
       dataSource,
       this.id || `azure-map-line-layer-${state.id++}`,
-      this.options || undefined
+      this.lineOptions || undefined
     )
 
     this.$emit(AzureMapLineLayerEvent.Created, this.$data.lineLayer)

@@ -36,6 +36,7 @@ export default defineComponent({
       default: null,
     },
   },
+  emits: Object.values(AzureMapHeatMapLayerEvent),
   data() {
     return {
       heatMapLayer: {} as atlas.layer.HeatMapLayer,
@@ -59,12 +60,16 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create the heat map layer
-    this.$data.heatMapLayer = new this.$_azureMaps.atlas.layer.HeatMapLayer(
+    const layer = new this.$_azureMaps.atlas.layer.HeatMapLayer(
       dataSource,
       this.id || `azure-map-heat-map-layer-${state.id++}`,
-      this.options || undefined
+      this.options || {
+        radius: 10,
+        opacity: 0.8,
+      }
     )
-
+    map.layers.add(layer)
+    this.$data.heatMapLayer = layer
     this.$emit(AzureMapHeatMapLayerEvent.Created, this.$data.heatMapLayer)
 
     // Watch for options changes

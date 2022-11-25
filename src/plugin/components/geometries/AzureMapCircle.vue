@@ -44,25 +44,29 @@ export default defineComponent({
       default: 0,
     },
   },
-
+  computed: {
+    propsToPass() {
+      const defaultProperties = {
+        subType: 'Circle',
+        radius: this.radius,
+      }
+      const propProps = this.properties
+        ? {
+            ...this.properties,
+            ...defaultProperties,
+          }
+        : defaultProperties
+      return {
+        id: this.id,
+        coordinates: this.coordinates,
+        latitude: this.latitude,
+        longitude: this.longitude,
+        properties: propProps,
+      }
+    },
+  },
   render() {
-    // const defaultProperties = {
-    //   subType: 'Circle',
-    //   radius: this.radius,
-    // }
-
-    // if (!context.data.attrs) {
-    //   context.data.attrs = {}
-    // }
-
-    // context.data.attrs.properties = context.data.attrs.properties
-    //   ? {
-    //       ...context.data.attrs.properties,
-    //       ...defaultProperties,
-    //     }
-    //   : defaultProperties
-
-    return h(AzureMapPoint, this.$props)
+    return h(AzureMapPoint, this.propsToPass)
   },
 })
 </script>

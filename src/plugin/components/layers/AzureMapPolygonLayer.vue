@@ -31,11 +31,12 @@ export default defineComponent({
       default: '',
     },
 
-    lineOptions: {
+    options: {
       type: Object as PropType<atlas.PolygonLayerOptions | null>,
       default: null,
     },
   },
+  emits: Object.values(AzureMapPolygonLayerEvent),
   data() {
     return {
       polygonLayer: {} as atlas.layer.PolygonLayer,
@@ -62,7 +63,7 @@ export default defineComponent({
     this.$data.polygonLayer = new this.$_azureMaps.atlas.layer.PolygonLayer(
       dataSource,
       this.id || `azure-map-polygon-layer-${state.id++}`,
-      this.lineOptions || undefined
+      this.options || undefined
     )
 
     this.$emit(AzureMapPolygonLayerEvent.Created, this.$data.polygonLayer)

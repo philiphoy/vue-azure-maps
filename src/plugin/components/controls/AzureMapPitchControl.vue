@@ -45,7 +45,6 @@ export default defineComponent({
   render() {
     // Construct a pitch control
     return h(AzureMapControl, {
-
       control: new this.$_azureMaps.atlas.control.PitchControl({
         pitchDegreesDelta: this.pitchDegreesDelta,
         style: this.controlStyle,
@@ -53,7 +52,6 @@ export default defineComponent({
       options: {
         position: this.position,
       } as atlas.ControlOptions,
-
     })
   },
 })

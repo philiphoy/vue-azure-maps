@@ -1,26 +1,41 @@
 <template>
-  <AzureMap
-    :center="[-122.33, 47.6]"
-    class="AzureMap"
-    @click="hidePopup"
-    @mousestart="hidePopup"
-  >
+  <AzureMap :center="[-122.33, 47.6]" class="AzureMap" @mousestart="hidePopup">
     <AzureMapZoomControl />
-    <AzureMapFullscreenControl />
     <AzureMapPitchControl />
     <AzureMapCompassControl />
+    <AzureMapFullscreenControl />
+    <AzureMapGeolocationControl />
+    <AzureMapStyleControl />
+    <AzureMapDataSource
+      :external-source-url="'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson'"
+    >
+      <AzureMapHeatMapLayer />
+    </AzureMapDataSource>
+    <AzureMapDataSource>
+      <!-- Add Polygons to the Data Source -->
+      <template v-for="point in points" :key="point.properties.name">
+        <AzureMapCircle
+          :longitude="point.longitude"
+          :latitude="point.latitude"
+          :radius="100000000"
+        />
+      </template>
+      <!-- Add a Polygon Layer to render the Polygons stored in the Data Source -->
+      <AzureMapPolygonLayer :options="polygonLayerOptions" />
+    </AzureMapDataSource>
     <AzureMapDataSource
       :cluster="cluster"
       :cluster-radius="clusterRadius"
       :cluster-max-zoom="clusterMaxZoom"
     >
-      <AzureMapPoint
-        v-for="point in points"
-        :key="point.properties.name"
-        :longitude="point.longitude"
-        :latitude="point.latitude"
-        :properties="point.properties"
-      />
+      <template v-for="point in points" :key="point.properties.name">
+        <AzureMapPoint
+          :longitude="point.longitude"
+          :latitude="point.latitude"
+          :properties="point.properties"
+        />
+      </template>
+
       <AzureMapPopup
         v-model="isPopupOpen"
         :position="popupPosition"
@@ -37,12 +52,12 @@
         </template>
       </AzureMapPopup>
       <AzureMapBubbleLayer
-        :options="bubbleLayerOptions"
+        :symbol-options="bubbleLayerOptions"
         @created="bubbleLayer = $event"
       />
-      <AzureMapSymbolLayer :options="symbolLayerOptions" />
+      <AzureMapSymbolLayer :symbol-options="symbolLayerOptions" />
       <AzureMapSymbolLayer
-        :options="shapeLayerOptions"
+        :symbol-options="shapeLayerOptions"
         @created="symbolLayer = $event"
       />
       <AzureMapSpiderClusterManager
@@ -52,6 +67,16 @@
         @feature-selected="onFeatureSelected"
         @feature-unselected="onFeatureUnselected"
       />
+    </AzureMapDataSource>
+    <AzureMapDataSource>
+      <!-- Add Polygons to the Data Source -->
+      <AzureMapPolygon
+        v-for="polygon in polygons"
+        :key="polygon.name"
+        :coordinates="polygon.coordinates"
+      />
+      <!-- Add a Polygon Layer to render the Polygons stored in the Data Source -->
+      <AzureMapPolygonLayer :options="polygonLayerOptions" />
     </AzureMapDataSource>
   </AzureMap>
 </template>
@@ -65,10 +90,16 @@ import {
   AzureMapCompassControl,
   AzureMapDataSource,
   AzureMapPoint,
+  AzureMapCircle,
+  AzureMapHeatMapLayer,
+  AzureMapPolygonLayer,
+  AzureMapPolygon,
   AzureMapPopup,
   AzureMapBubbleLayer,
   AzureMapSymbolLayer,
   AzureMapSpiderClusterManager,
+  AzureMapGeolocationControl,
+  AzureMapStyleControl,
 } from '@/plugin'
 import { atlas } from 'types'
 import { defineComponent } from 'vue'
@@ -90,10 +121,16 @@ export default defineComponent({
     AzureMapCompassControl,
     AzureMapDataSource,
     AzureMapPoint,
+    AzureMapPolygon,
+    AzureMapCircle,
+    AzureMapHeatMapLayer,
+    AzureMapPolygonLayer,
     AzureMapPopup,
     AzureMapBubbleLayer,
     AzureMapSymbolLayer,
     AzureMapSpiderClusterManager,
+    AzureMapGeolocationControl,
+    AzureMapStyleControl,
   },
 
   data() {
@@ -117,7 +154,10 @@ export default defineComponent({
       // The maximium zoom level in which clustering occurs.
       // If you zoom in more than this, all points are rendered as symbols.
       clusterMaxZoom: 15,
-
+      polygonLayerOptions: {
+        fillColor: 'green',
+        opacity: 0.5,
+      } as atlas.PolygonLayerOptions,
       bubbleLayerOptions: {
         // Scale the size of the clustered bubble based on the number of points inthe cluster.
         radius: [
@@ -148,7 +188,11 @@ export default defineComponent({
       shapeLayerOptions: {
         filter: ['!', ['has', 'point_count']], // Filter out clustered points from this layer.
       } as atlas.SymbolLayerOptions,
-
+      polygons: [] as {
+        name: string
+        coordinates: atlas.data.Position[]
+      }[],
+      mockPolygonSize: 2,
       symbolLayerOptions: {
         iconOptions: {
           image: 'none', //Hide the icon image.
@@ -163,6 +207,7 @@ export default defineComponent({
 
   mounted() {
     this.generateMockPoints()
+    this.generateMockPolygons()
   },
 
   methods: {
@@ -217,6 +262,21 @@ export default defineComponent({
             name: `Point-${i}`,
             description: `This is a popup for Point-${i}.`,
           },
+        })
+      }
+    },
+    generateMockPolygons(): void {
+      // Generate a bunch of polygons with random coordinates
+      for (let i = 0; i < this.mockPolygonSize; i++) {
+        this.polygons.push({
+          name: `Polygon-${i}`,
+          coordinates: [
+            [this.generateRandomLongitude(), this.generateRandomLatitude()],
+            [this.generateRandomLongitude(), this.generateRandomLatitude()],
+            [this.generateRandomLongitude(), this.generateRandomLatitude()],
+            [this.generateRandomLongitude(), this.generateRandomLatitude()],
+            [this.generateRandomLongitude(), this.generateRandomLatitude()],
+          ],
         })
       }
     },

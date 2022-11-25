@@ -72,7 +72,6 @@ export default defineComponent({
   render() {
     // Construct a geolocation control
     return h(AzureMapControl, {
-
       control: new GeolocationControl(
         this.$_azureMaps.atlas,
         getOptionsFromProps({
@@ -86,7 +85,6 @@ export default defineComponent({
       options: {
         position: this.position,
       } as atlas.ControlOptions,
-
     })
   },
 })

@@ -30,11 +30,12 @@ export default defineComponent({
       default: '',
     },
 
-    options: {
+    symbolOptions: {
       type: Object as PropType<atlas.BubbleLayerOptions | null>,
       default: null,
     },
   },
+  emits: Object.values(AzureMapBubbleLayerEvent),
   data() {
     return {
       bubbleLayer: {} as atlas.layer.BubbleLayer,
@@ -71,7 +72,7 @@ export default defineComponent({
     this.$data.bubbleLayer = new this.$_azureMaps.atlas.layer.BubbleLayer(
       dataSource,
       this.id || `azure-map-bubble-layer-${state.id++}`,
-      this.options || undefined
+      this.symbolOptions || undefined
     )
 
     this.$emit(AzureMapBubbleLayerEvent.Created, this.$data.bubbleLayer)

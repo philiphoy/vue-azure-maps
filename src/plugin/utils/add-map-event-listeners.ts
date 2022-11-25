@@ -14,19 +14,30 @@ function addMapEventListeners({
     // `.sync` modifier pattern for 'two-way binding': `update:`.
     if (
       reservedEventTypes.includes(eventType) ||
-      eventType.startsWith('update:')
-    )
+      eventType.startsWith('onUpdate:')
+    ) {
       continue
+    }
+
+    if (typeof callback !== 'function') {
+      continue
+    }
+
+    //remove onEvent prefix
+    let trimmedEventType = eventType.toLowerCase()
+    if (trimmedEventType.startsWith('on')) {
+      trimmedEventType = trimmedEventType.substring(2)
+    }
 
     if (target) {
-      map.events.add(eventType as any, target, callback as any)
+      map.events.add(trimmedEventType as any, target, callback as any)
       mapListeners.push(() =>
-        map.events.remove(eventType as any, target, callback as any)
+        map.events.remove(trimmedEventType as any, target, callback as any)
       )
     } else {
-      map.events.add(eventType as any, callback as any)
+      map.events.add(trimmedEventType as any, callback as any)
       mapListeners.push(() =>
-        map.events.remove(eventType as any, callback as any)
+        map.events.remove(trimmedEventType as any, callback as any)
       )
     }
   }

@@ -86,6 +86,7 @@ export default defineComponent({
       default: undefined,
     },
   },
+  emits: Object.values(AzureMapSpiderClusterManagerEvent),
   data() {
     return {
       spiderManager: null as SpiderClusterManager | null,
@@ -178,6 +179,9 @@ export default defineComponent({
   unmounted() {
     if (!this.$data.spiderManager) return
     this.$data.spiderManager.dispose()
+  },
+  render() {
+    return () => null
   },
 })
 </script>

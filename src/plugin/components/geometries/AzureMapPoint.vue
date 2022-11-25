@@ -57,7 +57,7 @@ export default defineComponent({
   },
   data() {
     return {
-      unbindProps: function () { },
+      unbindProps: function () {},
       point: null as atlas.data.Point | null,
       shape: null as atlas.Shape | null,
     }

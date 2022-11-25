@@ -36,7 +36,7 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-
+  emits: Object.values(AzureMapLineStringEvents),
   unmounted() {
     const getDataSource = getDataSourceInjection(this)
     if (!getDataSource) return

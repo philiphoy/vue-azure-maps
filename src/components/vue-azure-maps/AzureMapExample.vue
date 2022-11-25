@@ -1,14 +1,14 @@
 <template>
   <AzureMap
     v-if="showMap"
-    v-model:map-style="mapOptions.style"
-    v-model:center="mapOptions.center"
-    v-model:view="mapOptions.view"
-    v-model:language="mapOptions.language"
+    :map-style="mapOptions.style"
+    :center="mapOptions.center"
+    :view="mapOptions.view"
+    :language="mapOptions.language"
     class="AzureMap"
+    @ready="setMap"
     @mousemove="onMouseMove"
     @mouseup="onMouseUp"
-    @ready="setMap"
   >
     <!-- Add a custom icon to the map's image sprite -->
     <AzureMapImageSpriteIcon
@@ -48,7 +48,7 @@
         />
       </template>
       <!-- Add a Symbol Layer to render the Points stored in the Data Source -->
-      <AzureMapSymbolLayer :options="customIconSymbolLayerOptions" />
+      <AzureMapSymbolLayer :symbol-options="customIconSymbolLayerOptions" />
     </AzureMapDataSource>
 
     <!-- Create a Data Source -->
@@ -72,7 +72,7 @@
     <AzureMapDataSource>
       <!-- Add a Symbol Layer to render the Points stored in the Data Source -->
       <AzureMapSymbolLayer
-        :options="symbolLayerOptions"
+        :symbol-options="symbolLayerOptions"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
         @mousedown="onMouseDown"
@@ -85,9 +85,10 @@
           :latitude="point.latitude"
           :properties="point.properties"
         />
+
         <!-- Add a Popup to the map for every Point -->
         <AzureMapPopup
-          v-model="point.properties.isPopupOpen"
+          v-model="point.isPopupOpen"
           :position="[point.longitude, point.latitude]"
           :pixel-offset="[0, -18]"
           :close-button="false"
@@ -163,6 +164,7 @@ type MapOptions = atlas.ServiceOptions &
 type CustomPoint = {
   longitude: number
   latitude: number
+  isPopupOpen: boolean
   properties: Record<string, unknown>
 }
 
@@ -305,13 +307,12 @@ export default defineComponent({
         const point = this.getCustomPointByName(
           selectedShape.getProperties().name
         )
-
         if (point) {
           // Capture the selected point.
           this.selectedPoint = point
 
           // Show the popup
-          point.properties.isPopupOpen = true
+          point.isPopupOpen = true
         }
       }
     },
@@ -319,7 +320,7 @@ export default defineComponent({
     onMouseLeave(): void {
       // Hide the popup
       if (this.selectedPoint) {
-        this.selectedPoint.properties.isPopupOpen = false
+        this.selectedPoint.isPopupOpen = false
 
         // Stop tracking the selected point.
         this.selectedPoint = null
@@ -347,18 +348,21 @@ export default defineComponent({
 
         if (point) {
           // Update the longitude and latitude
-          ;[point.longitude, point.latitude] = e.position
+          // prettier-ignore
+          [point.longitude, point.latitude] = e.position
         }
       }
     },
 
     onMouseUp(e: atlas.MapMouseEvent): void {
-      // Stop tracking the selected shape.
-      this.selectedShape = null
-      // Make map panable again.
-      e.map.setUserInteraction({
-        dragPanInteraction: true,
-      })
+      if (this.selectedShape) {
+        // Stop tracking the selected shape.
+        this.selectedShape = null
+        // Make map panable again.
+        e.map.setUserInteraction({
+          dragPanInteraction: true,
+        })
+      }
     },
 
     generateMockPoints(): void {
@@ -367,6 +371,7 @@ export default defineComponent({
         this.points.push({
           longitude: this.generateRandomLongitude(),
           latitude: this.generateRandomLatitude(),
+          isPopupOpen: false,
           properties: {
             name: `Point-${i}`,
             description: `This is a popup for Point-${i}.`,

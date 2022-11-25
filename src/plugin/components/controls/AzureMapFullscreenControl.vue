@@ -45,7 +45,6 @@ export default defineComponent({
   render() {
     // Construct a fullscreen control
     return h(AzureMapControl, {
-
       control: new FullscreenControl({
         style: this.controlStyle,
         hideIfUnsupported: this.hideIfUnsupported,
@@ -53,7 +52,6 @@ export default defineComponent({
       options: {
         position: this.position,
       } as atlas.ControlOptions,
-
     })
   },
 })

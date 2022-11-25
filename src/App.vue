@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import AzureMapExample from './components/vue-azure-maps/AzureMapExample.vue'
+import AzureMapExample from './components/vue-azure-maps/AzureMapSpiderClusterManagerExample.vue'
 // import AzureMapSpiderClusterManagerExample from './components/vue-azure-maps/AzureMapSpiderClusterManagerExample.vue'
 
 export default defineComponent({

@@ -409,7 +409,21 @@ export default defineComponent({
       default: null,
     },
   },
-
+  emits: [
+    AzureMapEvent.Ready,
+    'update:language',
+    'update:renderWorldCopies',
+    'update:showFeedbackLink',
+    'update:showLogo',
+    'update:mapStyle',
+    'update:language',
+    'update:zoom',
+    'update:minZoom',
+    'update:maxZoom',
+    'update:center',
+    'update:bearing',
+    'update:pitch',
+  ],
   data() {
     return {
       /**
@@ -426,11 +440,11 @@ export default defineComponent({
        */
       isMapReady: false,
 
-      removeEventListeners: () => { },
+      removeEventListeners: () => {},
 
-      unbindProps: () => { },
+      unbindProps: () => {},
 
-      removeMapReadyListener: () => { },
+      removeMapReadyListener: () => {},
     }
   },
   computed: {

@@ -32,6 +32,7 @@ export default defineComponent({
       default: null,
     },
   },
+  emits: Object.values(AzureMapImageLayerEvent),
   data() {
     return {
       imageLayer: {} as atlas.layer.ImageLayer,

@@ -49,7 +49,6 @@ export default defineComponent({
   render() {
     // Construct a compass control
     return h(AzureMapControl, {
-
       control: new this.$_azureMaps.atlas.control.StyleControl({
         style: this.controlStyle,
         mapStyles: this.mapStyles as string[] | 'all',
@@ -57,7 +56,6 @@ export default defineComponent({
       options: {
         position: this.position,
       } as atlas.ControlOptions,
-
     })
   },
 })

@@ -32,6 +32,7 @@ export default defineComponent({
       default: null,
     },
   },
+  emits: Object.values(AzureMapTileLayerEvent),
   data() {
     return {
       tileLayer: {} as atlas.layer.TileLayer,

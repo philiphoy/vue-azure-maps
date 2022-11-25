@@ -24,6 +24,7 @@ export default defineComponent({
    * Inject the `getDataSource` function to get the `atlas.source.DataSource` instance
    */
   inject: ['getMap', 'getDataSource'],
+  inheritAttrs: false,
 
   props: {
     id: {
@@ -36,6 +37,7 @@ export default defineComponent({
       default: null,
     },
   },
+  emits: Object.values(AzureMapSymbolLayerEvent),
   data() {
     return {
       symbolLayer: {} as atlas.layer.SymbolLayer,

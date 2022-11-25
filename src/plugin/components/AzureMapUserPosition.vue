@@ -146,7 +146,7 @@ export default defineComponent({
       default: null,
     },
   },
-
+  emits: Object.values(AzureMapUserPositionEvent),
   data() {
     return {
       longitude: null as number | null,
