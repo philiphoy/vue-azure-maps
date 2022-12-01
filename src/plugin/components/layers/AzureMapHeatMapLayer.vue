@@ -4,7 +4,7 @@ import {
   getDataSourceInjection,
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapHeatMapLayerEvent {
@@ -60,7 +60,7 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create the heat map layer
-    const layer = new this.$_azureMaps.atlas.layer.HeatMapLayer(
+    const layer = new atlas.layer.HeatMapLayer(
       dataSource,
       this.id || `azure-map-heat-map-layer-${state.id++}`,
       this.options || {

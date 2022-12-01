@@ -2,7 +2,7 @@
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType } from 'vue'
 
 /**
@@ -114,7 +114,7 @@ export default defineComponent({
     const map = getMap()
 
     // Create the HTML marker
-    this.$data.marker = new this.$_azureMaps.atlas.HtmlMarker(
+    this.$data.marker = new atlas.HtmlMarker(
       getOptionsFromProps({ props: this.$props })
     )
 

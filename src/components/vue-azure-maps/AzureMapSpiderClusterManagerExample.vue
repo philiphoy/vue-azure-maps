@@ -1,5 +1,10 @@
 <template>
-  <AzureMap :center="[-122.33, 47.6]" class="AzureMap" @mousestart="hidePopup">
+  <AzureMap
+    :center="[-122.33, 47.6]"
+    class="AzureMap"
+    subscription-key="M25GAPje7RDBbTJjFQWY1ts6OoBnDE8BIW4-0b-5dCo"
+    @mousestart="hidePopup"
+  >
     <AzureMapZoomControl />
     <AzureMapPitchControl />
     <AzureMapCompassControl />
@@ -101,7 +106,7 @@ import {
   AzureMapGeolocationControl,
   AzureMapStyleControl,
 } from '@/plugin'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent } from 'vue'
 
 type CustomPoint = {

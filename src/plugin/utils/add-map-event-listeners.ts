@@ -1,4 +1,4 @@
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 
 function addMapEventListeners({
   map,

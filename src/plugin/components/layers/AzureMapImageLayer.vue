@@ -1,7 +1,7 @@
 <script lang="ts">
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapImageLayerEvent {
@@ -48,7 +48,7 @@ export default defineComponent({
     const map = getMap()
 
     // Create the image layer
-    this.$data.imageLayer = new this.$_azureMaps.atlas.layer.ImageLayer(
+    this.$data.imageLayer = new atlas.layer.ImageLayer(
       this.options || {},
       this.id || `azure-map-image-layer-${state.id++}`
     )

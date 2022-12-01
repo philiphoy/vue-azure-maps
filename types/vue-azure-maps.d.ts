@@ -1,5 +1,4 @@
 import atlas from 'azure-maps-control'
-import { PluginFunction } from 'vue'
 
 export declare class VueAzureMaps {
   constructor(lib: typeof atlas, options?: VueAzureMapsPluginOptions)
@@ -8,9 +7,6 @@ export declare class VueAzureMaps {
   public readonly atlas: typeof atlas
 
   public setSubscriptionKey: (key: string) => void
-
-  static install: PluginFunction<VueAzureMapsPluginOptions>
-  static version: string
 }
 
 export interface VueAzureMapsPluginOptions {

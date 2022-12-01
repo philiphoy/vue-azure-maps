@@ -1,6 +1,6 @@
 <script lang="ts">
 import { getDataSourceInjection } from '@/plugin/utils/dependency-injection'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapLineStringEvents {
@@ -41,8 +41,8 @@ export default defineComponent({
     const getDataSource = getDataSourceInjection(this)
     if (!getDataSource) return
     const dataSource = getDataSource()
-    const shape = new this.$_azureMaps.atlas.Shape(
-      new this.$_azureMaps.atlas.data.LineString(this.coordinates || []),
+    const shape = new atlas.Shape(
+      new atlas.data.LineString(this.coordinates || []),
       this.id || `azure-map-line-string-${state.id++}`,
       this.properties
     )
@@ -60,8 +60,8 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create a shape from the line string geometry
-    const shape = new this.$_azureMaps.atlas.Shape(
-      new this.$_azureMaps.atlas.data.LineString(this.coordinates || []),
+    const shape = new atlas.Shape(
+      new atlas.data.LineString(this.coordinates || []),
       this.id || `azure-map-line-string-${state.id++}`,
       this.properties
     )

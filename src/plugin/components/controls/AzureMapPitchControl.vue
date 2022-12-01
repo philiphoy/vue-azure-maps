@@ -1,5 +1,5 @@
 <script lang="ts">
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { ControlPosition, ControlStyle } from 'azure-maps-control'
 import { defineComponent, h, PropType } from 'vue'
 import AzureMapControl from './AzureMapControl.vue'
@@ -45,7 +45,7 @@ export default defineComponent({
   render() {
     // Construct a pitch control
     return h(AzureMapControl, {
-      control: new this.$_azureMaps.atlas.control.PitchControl({
+      control: new atlas.control.PitchControl({
         pitchDegreesDelta: this.pitchDegreesDelta,
         style: this.controlStyle,
       }),

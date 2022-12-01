@@ -5,7 +5,7 @@ import {
 } from '@/plugin/utils/dependency-injection'
 import bindProps from '@/plugin/utils/bind-props'
 import { looseEqual } from '@/plugin/utils'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapPointEvent {
@@ -102,14 +102,12 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create a point geometry
-    this.$data.point = new this.$_azureMaps.atlas.data.Point(
-      this.pointCoordinates || []
-    )
+    this.$data.point = new atlas.data.Point(this.pointCoordinates || [])
 
     this.$emit(AzureMapPointEvent.GeometryCreated, this.$data.point)
 
     // Create a shape from the point geometry
-    this.$data.shape = new this.$_azureMaps.atlas.Shape(
+    this.$data.shape = new atlas.Shape(
       this.$data.point,
       this.id || `azure-map-point-${state.id++}`,
       this.properties

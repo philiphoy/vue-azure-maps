@@ -1,13 +1,11 @@
 import { VueAzureMapsPluginOptions, atlas } from 'types'
-//import { PluginFunction, VueConstructor } from 'vue'
-//import {  VueWithPlugin } from './install'
-//import { inBrowser } from './utils/dom'
+import * as atlasJs from 'azure-maps-control'
 import { assert } from './utils/warn'
 
 export default class VueAzureMaps {
   options: VueAzureMapsPluginOptions
 
-  constructor(lib: typeof atlas, options?: VueAzureMapsPluginOptions) {
+  constructor(options?: VueAzureMapsPluginOptions) {
     // Auto install if it is not done yet and `window` has `Vue`.
     // To allow users to avoid auto-installation in some cases,
     // this code should be placed here.
@@ -18,10 +16,6 @@ export default class VueAzureMaps {
     //  }
 
     if (process.env.NODE_ENV !== 'production') {
-      //assert(
-      //  VueWithPlugin,
-      //  `must call Vue.use(VueAzureMaps) before using Azure Maps components.`
-      //)
       assert(
         typeof Promise !== 'undefined',
         `vue-azure-maps requires a Promise polyfill in this browser.`
@@ -35,7 +29,7 @@ export default class VueAzureMaps {
     if (!options) options = { key: '' }
     this.options = options
     this.key = options.key
-    this.atlas = lib
+    this.atlas = atlasJs
     this.setSubscriptionKey(options.key)
   }
 

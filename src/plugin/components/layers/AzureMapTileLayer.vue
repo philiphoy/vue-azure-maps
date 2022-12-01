@@ -1,7 +1,7 @@
 <script lang="ts">
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { reactive, defineComponent, PropType } from 'vue'
 
 enum AzureMapTileLayerEvent {
@@ -48,7 +48,7 @@ export default defineComponent({
     const map = getMap()
 
     // Create the tile layer
-    this.$data.tileLayer = new this.$_azureMaps.atlas.layer.TileLayer(
+    this.$data.tileLayer = new atlas.layer.TileLayer(
       this.options || undefined,
       this.id || `azure-map-tile-layer-${state.id++}`
     )

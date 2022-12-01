@@ -4,7 +4,7 @@ import {
   getDataSourceInjection,
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapLineLayerEvent {
@@ -60,7 +60,7 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create the line layer
-    this.$data.lineLayer = new this.$_azureMaps.atlas.layer.LineLayer(
+    this.$data.lineLayer = new atlas.layer.LineLayer(
       dataSource,
       this.id || `azure-map-line-layer-${state.id++}`,
       this.lineOptions || undefined

@@ -2554,7 +2554,6 @@ _defineProperty(VueAzureMaps, "version", ({"NODE_ENV":"production","BASE_URL":"/
 
 var VueAzureMapsPlugin = {
   install: function install(app, options) {
-    // makes ColoredText available in your Vue.js app as either "$this.coloredText" (in your Source) or "{{ $coloredText }}" in your templates
     if (app.config.globalProperties.$_azureMaps !== undefined) {
       if (false) {}
       return;
@@ -2564,7 +2563,7 @@ var VueAzureMapsPlugin = {
 };
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__(3797);
-;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-41.use[2]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/plugin/components/AzureMap.vue?vue&type=template&id=20dac277&ts=true
+;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-41.use[2]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/plugin/components/AzureMap.vue?vue&type=template&id=34531180&ts=true
 
 var _hoisted_1 = ["id"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -2576,7 +2575,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     map: _ctx.map
   }) : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true)], 12, _hoisted_1);
 }
-;// CONCATENATED MODULE: ./src/plugin/components/AzureMap.vue?vue&type=template&id=20dac277&ts=true
+;// CONCATENATED MODULE: ./src/plugin/components/AzureMap.vue?vue&type=template&id=34531180&ts=true
 
 // EXTERNAL MODULE: ./src/plugin/utils/get-options-from-props.ts
 var get_options_from_props = __webpack_require__(9278);
@@ -2585,6 +2584,8 @@ var bind_props = __webpack_require__(6710);
 // EXTERNAL MODULE: ./src/plugin/utils/add-map-event-listeners.ts
 var add_map_event_listeners = __webpack_require__(3275);
 ;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-41.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/plugin/components/AzureMap.vue?vue&type=script&lang=ts
+
+
 
 
 
@@ -2991,6 +2992,11 @@ var state = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.reactive)({
   methods: {
     initializeMap: function initializeMap() {
       // Instantiate map to the HTMLElement with the auto-generated map id.
+      if (this.$_azureMaps) {
+        this.$_azureMaps = new VueAzureMaps(dist_atlas_min, {
+          key: 'M25GAPje7RDBbTJjFQWY1ts6OoBnDE8BIW4-0b-5dCo'
+        });
+      }
       var map = new this.$_azureMaps.atlas.Map(this.mapId, (0,get_options_from_props/* default */.Z)({
         props: this.$props,
         reservedAttributes: {

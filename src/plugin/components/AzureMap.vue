@@ -10,9 +10,9 @@
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import bindProps from '@/plugin/utils/bind-props'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive, CSSProperties } from 'vue'
-
+import VueAzureMaps from '../vue-azure-maps'
 enum AzureMapEvent {
   Ready = 'ready',
 }
@@ -469,6 +469,11 @@ export default defineComponent({
   methods: {
     initializeMap(): void {
       // Instantiate map to the HTMLElement with the auto-generated map id.
+      if (!this.$_azureMaps && this.subscriptionKey) {
+        this.$_azureMaps = new VueAzureMaps({
+          key: this.subscriptionKey,
+        })
+      }
       const map = new this.$_azureMaps.atlas.Map(
         this.mapId,
         getOptionsFromProps({

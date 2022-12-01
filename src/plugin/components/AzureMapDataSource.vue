@@ -9,7 +9,7 @@
 <script lang="ts">
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapDataSourceEvent {
@@ -180,7 +180,7 @@ export default defineComponent({
       const map = getMap()
 
       // Create a data source to manage shapes
-      const dataSource = new this.$_azureMaps.atlas.source.DataSource(
+      const dataSource = new atlas.source.DataSource(
         this.id || `azure-map-data-source-${state.id++}`,
         getOptionsFromProps({
           props: this.dataSourceOptionProps,

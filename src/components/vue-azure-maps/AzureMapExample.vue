@@ -153,7 +153,7 @@ import {
   AzureMapPolygonLayer,
   AzureMapBubbleLayer,
 } from '@/plugin'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent } from 'vue'
 
 type MapOptions = atlas.ServiceOptions &

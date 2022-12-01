@@ -4,7 +4,7 @@ import {
   getDataSourceInjection,
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapPolygonLayerEvent {
@@ -60,7 +60,7 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create the polygon layer
-    this.$data.polygonLayer = new this.$_azureMaps.atlas.layer.PolygonLayer(
+    this.$data.polygonLayer = new atlas.layer.PolygonLayer(
       dataSource,
       this.id || `azure-map-polygon-layer-${state.id++}`,
       this.options || undefined

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { getDataSourceInjection } from '@/plugin/utils/dependency-injection'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { reactive, defineComponent, PropType } from 'vue'
 
 enum AzureMapPolygonEvents {
@@ -46,8 +46,8 @@ export default defineComponent({
 
     // Retrieve the data source from the injected function
     const dataSource = getDataSource()
-    const shape = new this.$_azureMaps.atlas.Shape(
-      new this.$_azureMaps.atlas.data.Polygon(this.coordinates || []),
+    const shape = new atlas.Shape(
+      new atlas.data.Polygon(this.coordinates || []),
       this.id || `azure-map-polygon-${state.id++}`,
       this.properties
     )
@@ -66,8 +66,8 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create a shape from the polygon geometry
-    const shape = new this.$_azureMaps.atlas.Shape(
-      new this.$_azureMaps.atlas.data.Polygon(this.coordinates || []),
+    const shape = new atlas.Shape(
+      new atlas.data.Polygon(this.coordinates || []),
       this.id || `azure-map-polygon-${state.id++}`,
       this.properties
     )

@@ -9,7 +9,7 @@ import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
 import bindProps from '@/plugin/utils/bind-props'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType } from 'vue'
 
 enum AzureMapPopupEvent {
@@ -128,7 +128,7 @@ export default defineComponent({
     }
 
     // Create a popup with selected component props as options
-    this.$data.popup = new this.$_azureMaps.atlas.Popup(
+    this.$data.popup = new atlas.Popup(
       getOptionsFromProps({
         props: this.$props,
         excludedPropKeys: ['tag', 'modelValue'],

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { FullscreenControl } from '@/plugin/modules/controls/fullscreen'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { ControlPosition, ControlStyle } from 'azure-maps-control'
 import { defineComponent, h, PropType } from 'vue'
 import AzureMapControl from './AzureMapControl.vue'

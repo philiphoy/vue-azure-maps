@@ -1,4 +1,4 @@
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { WatchOptions } from 'vue'
 import { capitalize } from '.'
 import addMapEventListeners from './add-map-event-listeners'

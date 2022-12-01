@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, h, PropType } from 'vue'
 import AzureMapPoint from './AzureMapPoint.vue'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 
 /**
  * A Point with a circle subtype.

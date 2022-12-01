@@ -1,7 +1,7 @@
 <script lang="ts">
 import { GeolocationControl } from '@/plugin/modules/controls/geolocation'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { ControlPosition, ControlStyle } from 'azure-maps-control'
 import { defineComponent, h, PropType } from 'vue'
 import AzureMapControl from './AzureMapControl.vue'
@@ -73,7 +73,7 @@ export default defineComponent({
     // Construct a geolocation control
     return h(AzureMapControl, {
       control: new GeolocationControl(
-        this.$_azureMaps.atlas,
+        atlas,
         getOptionsFromProps({
           props: this.$props,
           excludedPropKeys: ['position'],

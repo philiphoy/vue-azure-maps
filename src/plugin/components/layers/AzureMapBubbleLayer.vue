@@ -4,7 +4,7 @@ import {
   getDataSourceInjection,
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { reactive, defineComponent, PropType } from 'vue'
 
 enum AzureMapBubbleLayerEvent {
@@ -69,7 +69,7 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create the bubble layer
-    this.$data.bubbleLayer = new this.$_azureMaps.atlas.layer.BubbleLayer(
+    this.$data.bubbleLayer = new atlas.layer.BubbleLayer(
       dataSource,
       this.id || `azure-map-bubble-layer-${state.id++}`,
       this.symbolOptions || undefined

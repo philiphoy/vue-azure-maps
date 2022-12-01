@@ -5,7 +5,7 @@ import {
 } from '@/plugin/modules/other/spiderClusterManager'
 import { getMapInjection } from '@/plugin/utils/dependency-injection'
 import getOptionsFromProps from '@/plugin/utils/get-options-from-props'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType } from 'vue'
 
 enum AzureMapSpiderClusterManagerEvent {
@@ -134,7 +134,7 @@ export default defineComponent({
     })
 
     this.$data.spiderManager = new SpiderClusterManager(
-      this.$_azureMaps.atlas,
+      atlas,
       map,
       this.clusterLayer,
       this.unclustedLayer,

@@ -4,7 +4,7 @@ import {
   getDataSourceInjection,
 } from '@/plugin/utils/dependency-injection'
 import addMapEventListeners from '@/plugin/utils/add-map-event-listeners'
-import { atlas } from 'types'
+import * as atlas from 'azure-maps-control'
 import { defineComponent, PropType, reactive } from 'vue'
 
 enum AzureMapSymbolLayerEvent {
@@ -61,7 +61,7 @@ export default defineComponent({
     const dataSource = getDataSource()
 
     // Create the symbol layer
-    this.$data.symbolLayer = new this.$_azureMaps.atlas.layer.SymbolLayer(
+    this.$data.symbolLayer = new atlas.layer.SymbolLayer(
       dataSource,
       this.id || `azure-map-symbol-layer-${state.id++}`,
       this.symbolOptions || undefined
