@@ -1,7 +1,7 @@
 {
-  "name": "vue-azure-maps",
+  "name": "@nufix/vue-azure-maps",
   "description": "Integrate Azure Maps in your Vue application",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "author": {
     "name": "Ricardo Ruiz",
     "email": "ricardo@mrcodigo.com"
