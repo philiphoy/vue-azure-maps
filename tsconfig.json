@@ -27,5 +27,12 @@
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+  "src/App.vue",
+  "src/main.ts",
+  "src/components/vue-azure-maps/AzureMapExample.vue" ,
+  "src/components/vue-azure-maps/AzureMapSpiderClusterManagerExample.vue"
+]
+
 }

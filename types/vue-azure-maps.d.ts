@@ -1,4 +1,4 @@
-import atlas from 'azure-maps-control'
+import * as atlas from 'azure-maps-control'
 
 export declare class VueAzureMaps {
   constructor(lib: typeof atlas, options?: VueAzureMapsPluginOptions)

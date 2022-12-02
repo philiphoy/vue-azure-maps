@@ -105,7 +105,7 @@ import {
   AzureMapSpiderClusterManager,
   AzureMapGeolocationControl,
   AzureMapStyleControl,
-} from '@/plugin'
+} from '../../plugin'
 import * as atlas from 'azure-maps-control'
 import { defineComponent } from 'vue'
 
@@ -143,8 +143,8 @@ export default defineComponent({
       points: [] as CustomPoint[],
       mockPointSize: 100,
 
-      bubbleLayer: null as atlas.layer.BubbleLayer | null,
-      symbolLayer: null as atlas.layer.SymbolLayer | null,
+      bubbleLayer: null,
+      symbolLayer: null,
 
       isPopupOpen: false,
       popupPosition: null as atlas.data.Position | null,
@@ -162,37 +162,18 @@ export default defineComponent({
       polygonLayerOptions: {
         fillColor: 'green',
         opacity: 0.5,
-      } as atlas.PolygonLayerOptions,
+      },
+
       bubbleLayerOptions: {
         // Scale the size of the clustered bubble based on the number of points inthe cluster.
-        radius: [
-          'step',
-          ['get', 'point_count'],
-          20, // Default of 20 pixel radius.
-          100,
-          30, // If point_count >= 100, radius is 30 pixels.
-          750,
-          40, // If point_count >= 750, radius is 40 pixels.
-        ],
-
+        radius: 5,
         // Change the color of the cluster based on the value on the point_cluster property of the cluster.
-        color: [
-          'step',
-          ['get', 'point_count'],
-          'rgba(0,255,0,0.8)', // Default to green.
-          100,
-          'rgba(255,255,0,0.8)', // If the point_count >= 100, color is yellow.
-          750,
-          'rgba(255,0,0,0.8)', // If the point_count >= 100, color is red.
-        ],
+        color: 'rgba(0,255,0,0.8)', // Default to green.
         strokeWidth: 0,
         blur: 0.5,
-        filter: ['has', 'point_count'], // Only rendered data points which have a point_count property, which clusters do.
-      } as atlas.BubbleLayerOptions,
+      },
 
-      shapeLayerOptions: {
-        filter: ['!', ['has', 'point_count']], // Filter out clustered points from this layer.
-      } as atlas.SymbolLayerOptions,
+      shapeLayerOptions: {},
       polygons: [] as {
         name: string
         coordinates: atlas.data.Position[]
@@ -206,7 +187,7 @@ export default defineComponent({
           textField: '{point_count_abbreviated}',
           offset: [0, 0.4],
         },
-      } as atlas.SymbolLayerOptions,
+      },
     }
   },
 

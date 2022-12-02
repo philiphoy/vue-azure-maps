@@ -152,7 +152,7 @@ import {
   AzureMapLineLayer,
   AzureMapPolygonLayer,
   AzureMapBubbleLayer,
-} from '@/plugin'
+} from '../../plugin'
 import * as atlas from 'azure-maps-control'
 import { defineComponent } from 'vue'
 
@@ -225,7 +225,7 @@ export default defineComponent({
         polygonLayerOptions: {
           fillColor: 'green',
           opacity: 0.5,
-        } as atlas.PolygonLayerOptions,
+        },
       },
 
       symbolLayerOptions: {
@@ -234,7 +234,7 @@ export default defineComponent({
           allowOverlap: true,
           image: 'pin-red',
         },
-      } as atlas.SymbolLayerOptions,
+      },
 
       isCustomIconAdded: false,
 
@@ -243,23 +243,23 @@ export default defineComponent({
           image: 'vue-azure-maps-logo',
           size: 0.1,
         },
-      } as atlas.SymbolLayerOptions,
+      },
 
       bubbleLayerOptions: {
         radius: 5,
         strokeColor: '#4288f7',
         strokeWidth: 6,
         color: 'white',
-      } as atlas.BubbleLayerOptions,
+      },
 
       lineLayerOptions: {
         strokeColor: '#41B883',
         strokeWidth: 1,
-      } as atlas.LineLayerOptions,
+      },
 
       polygonLayerOptions: {
         fillColor: 'rgba(0, 200, 200, 0.8)',
-      } as atlas.PolygonLayerOptions,
+      },
 
       selectedShape: null as atlas.Shape | null,
 

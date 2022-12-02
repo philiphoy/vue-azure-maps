@@ -3571,10 +3571,9 @@ var AzureMapPopupEvent;
 const AzureMapPopup_exports_ = /*#__PURE__*/(0,exportHelper/* default */.Z)(AzureMapPopupvue_type_script_lang_ts, [['render',AzureMapPopupvue_type_template_id_19a02064_ts_true_render]])
 
 /* harmony default export */ var AzureMapPopup = (AzureMapPopup_exports_);
-;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-86.use[2]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/plugin/components/AzureMapUserPosition.vue?vue&type=template&id=3a8785c6&ts=true
-function AzureMapUserPositionvue_type_template_id_3a8785c6_ts_true_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-86.use[2]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/plugin/components/AzureMapUserPosition.vue?vue&type=template&id=aa84d19e&ts=true
 
-function AzureMapUserPositionvue_type_template_id_3a8785c6_ts_true_render(_ctx, _cache, $props, $setup, $data, $options) {
+function AzureMapUserPositionvue_type_template_id_aa84d19e_ts_true_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_AzureMapCircle = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("AzureMapCircle");
   var _component_AzureMapPoint = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("AzureMapPoint");
   var _component_AzureMapPolygonLayer = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("AzureMapPolygonLayer");
@@ -3584,14 +3583,12 @@ function AzureMapUserPositionvue_type_template_id_3a8785c6_ts_true_render(_ctx, 
     key: 0
   }, {
     default: (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withCtx)(function () {
-      return [_ctx.showAccuracy && _ctx.radius ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(_component_AzureMapCircle, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)({
+      return [_ctx.showAccuracy && _ctx.radius ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(_component_AzureMapCircle, {
         key: 0,
         longitude: _ctx.longitude,
         latitude: _ctx.latitude,
         radius: _ctx.radius
-      }, AzureMapUserPositionvue_type_template_id_3a8785c6_ts_true_defineProperty({}, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toHandlerKey)(_ctx.circleEventName), _cache[0] || (_cache[0] = function ($event) {
-        return _ctx.$emit(_ctx.circleEventName, $event);
-      }))), null, 16, ["longitude", "latitude", "radius"])) : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)(_component_AzureMapPoint, {
+      }, null, 8, ["longitude", "latitude", "radius"])) : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)(_component_AzureMapPoint, {
         longitude: _ctx.longitude,
         latitude: _ctx.latitude
       }, null, 8, ["longitude", "latitude"]), _ctx.showAccuracy ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(_component_AzureMapPolygonLayer, {
@@ -3604,7 +3601,7 @@ function AzureMapUserPositionvue_type_template_id_3a8785c6_ts_true_render(_ctx, 
     _: 1
   })) : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true);
 }
-;// CONCATENATED MODULE: ./src/plugin/components/AzureMapUserPosition.vue?vue&type=template&id=3a8785c6&ts=true
+;// CONCATENATED MODULE: ./src/plugin/components/AzureMapUserPosition.vue?vue&type=template&id=aa84d19e&ts=true
 
 ;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-86.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/plugin/components/AzureMapUserPosition.vue?vue&type=script&lang=ts
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -3809,7 +3806,7 @@ var AzureMapUserPositionEvent;
 
 
 ;
-const AzureMapUserPosition_exports_ = /*#__PURE__*/(0,exportHelper/* default */.Z)(AzureMapUserPositionvue_type_script_lang_ts, [['render',AzureMapUserPositionvue_type_template_id_3a8785c6_ts_true_render]])
+const AzureMapUserPosition_exports_ = /*#__PURE__*/(0,exportHelper/* default */.Z)(AzureMapUserPositionvue_type_script_lang_ts, [['render',AzureMapUserPositionvue_type_template_id_aa84d19e_ts_true_render]])
 
 /* harmony default export */ var AzureMapUserPosition = (AzureMapUserPosition_exports_);
 ;// CONCATENATED MODULE: ./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib/index.js!./node_modules/ts-loader/index.js??clonedRuleSet-86.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/plugin/components/AzureMapImageSpriteIcon.vue?vue&type=script&lang=ts

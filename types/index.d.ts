@@ -43,7 +43,7 @@ import AzureMapCircle from '@/plugin/components/geometries/AzureMapCircle.vue'
 import AzureMapLineString from '@/plugin/components/geometries/AzureMapLineString.vue'
 import AzureMapPolygon from '@/plugin/components/geometries/AzureMapPolygon.vue'
 
-import atlas from 'azure-maps-control'
+import * as atlas from 'azure-maps-control'
 import './vue'
 import { VueAzureMaps } from './vue-azure-maps'
 

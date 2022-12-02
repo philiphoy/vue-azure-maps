@@ -5,7 +5,6 @@
       :longitude="longitude"
       :latitude="latitude"
       :radius="radius"
-      @[circleEventName]="$emit(circleEventName, $event)"
     />
     <AzureMapPoint :longitude="longitude" :latitude="latitude" />
     <AzureMapPolygonLayer
