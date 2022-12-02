@@ -1,5 +1,5 @@
-import { VueAzureMapsPluginOptions, atlas } from 'types'
-import * as atlasJs from 'azure-maps-control'
+import { VueAzureMapsPluginOptions } from 'types/vue-azure-plugin-options'
+import * as atlas from 'azure-maps-control'
 import { assert } from './utils/warn'
 
 export default class VueAzureMaps {
@@ -29,7 +29,7 @@ export default class VueAzureMaps {
     if (!options) options = { key: '' }
     this.options = options
     this.key = options.key
-    this.atlas = atlasJs
+    this.atlas = atlas
     this.setSubscriptionKey(options.key)
   }
 

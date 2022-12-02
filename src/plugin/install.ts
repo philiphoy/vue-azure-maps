@@ -1,4 +1,4 @@
-import { VueAzureMapsPluginOptions } from 'types'
+import { VueAzureMapsPluginOptions } from 'types/vue-azure-plugin-options'
 import { App, Plugin } from 'vue'
 import VueAzureMaps from './vue-azure-maps'
 

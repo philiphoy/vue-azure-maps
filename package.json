@@ -1,7 +1,7 @@
 {
   "name": "@nufix/vue-azure-maps",
   "description": "Integrate Azure Maps in your Vue application",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "author": {
     "name": "Ricardo Ruiz",
     "email": "ricardo@mrcodigo.com"
@@ -32,7 +32,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:lib": "vue-tsc --declaration --emitDeclarationOnly --outDir types/plugin && vue-cli-service build --target lib --name vue-azure-maps src/plugin/index.ts",
+    "build:lib": "vue-tsc --declaration --emitDeclarationOnly --outDir types && vue-cli-service build --target lib --name vue-azure-maps src/plugin/index.ts",
     "lint": "vue-cli-service lint --fix",
     "test:unit": "vue-cli-service test:unit",
     "docs:dev": "vuepress dev vuepress",
