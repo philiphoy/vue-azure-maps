@@ -29,10 +29,9 @@
   ],
   "exclude": [
     "node_modules",
-  "src/App.vue",
-  "src/main.ts",
-  "src/components/vue-azure-maps/AzureMapExample.vue" ,
-  "src/components/vue-azure-maps/AzureMapSpiderClusterManagerExample.vue"
-]
-
+    "src/App.vue",
+    "src/main.ts",
+    "src/components/vue-azure-maps/AzureMapExample.vue" ,
+    "src/components/vue-azure-maps/AzureMapSpiderClusterManagerExample.vue"
+  ]
 }
