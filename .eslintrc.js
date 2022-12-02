@@ -93,5 +93,11 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'off',
       },
     },
+    {
+      files: ['./types/**/*.vue.d.ts'],
+      rules: {
+        '@typescript-eslint/ban-types': 'off',
+      },
+    },
   ],
 }
